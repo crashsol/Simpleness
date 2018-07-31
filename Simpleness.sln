@@ -17,6 +17,8 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simpleness.App", "src\Simpleness.App\Simpleness.App.csproj", "{140FE0F3-17F4-4D1A-AAED-AC0E217964BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "test\UnitTest\UnitTest.csproj", "{CA5861F3-AA44-4974-B70B-606CBF451343}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{140FE0F3-17F4-4D1A-AAED-AC0E217964BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{140FE0F3-17F4-4D1A-AAED-AC0E217964BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{140FE0F3-17F4-4D1A-AAED-AC0E217964BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA5861F3-AA44-4974-B70B-606CBF451343}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA5861F3-AA44-4974-B70B-606CBF451343}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA5861F3-AA44-4974-B70B-606CBF451343}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA5861F3-AA44-4974-B70B-606CBF451343}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,6 +58,7 @@ Global
 		{4D45156D-5184-4671-B82D-3B7A8D2FBCF1} = {543DFE4C-FE60-4F6C-AD2E-03274500F861}
 		{9A7E7092-AAF5-4C54-A5F3-E2E1A3C8396E} = {543DFE4C-FE60-4F6C-AD2E-03274500F861}
 		{140FE0F3-17F4-4D1A-AAED-AC0E217964BA} = {543DFE4C-FE60-4F6C-AD2E-03274500F861}
+		{CA5861F3-AA44-4974-B70B-606CBF451343} = {5B19B0B6-F462-4ED8-9026-56FBDD44B970}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {382C7768-875E-4413-A0F0-5AFBB9CE4BC1}
