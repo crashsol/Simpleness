@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  simpleness.web:
+    image: ${DOCKER_REGISTRY}simplenessweb
+    build:
+      context: .
+      dockerfile: Simpleness.Web/Dockerfile
