@@ -7,17 +7,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{543DFE4C-FE6
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{5B19B0B6-F462-4ED8-9026-56FBDD44B970}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simpleness.Utility", "src\Simpleness.Utility\Simpleness.Utility.csproj", "{01978214-BB9E-458E-A083-8ED5C5D0F9A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simpleness.Utility", "src\Simpleness.Utility\Simpleness.Utility.csproj", "{01978214-BB9E-458E-A083-8ED5C5D0F9A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simpleness.DataEntityFramework", "src\Simpleness.DataEntityFramework\Simpleness.DataEntityFramework.csproj", "{4D45156D-5184-4671-B82D-3B7A8D2FBCF1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simpleness.DataEntityFramework", "src\Simpleness.DataEntityFramework\Simpleness.DataEntityFramework.csproj", "{4D45156D-5184-4671-B82D-3B7A8D2FBCF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simpleness.Core", "src\Simpleness.Core\Simpleness.Core.csproj", "{9A7E7092-AAF5-4C54-A5F3-E2E1A3C8396E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simpleness.Core", "src\Simpleness.Core\Simpleness.Core.csproj", "{9A7E7092-AAF5-4C54-A5F3-E2E1A3C8396E}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{AB6E06FC-5401-4C4F-A070-D846BD592459}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simpleness.App", "src\Simpleness.App\Simpleness.App.csproj", "{140FE0F3-17F4-4D1A-AAED-AC0E217964BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simpleness.App", "src\Simpleness.App\Simpleness.App.csproj", "{140FE0F3-17F4-4D1A-AAED-AC0E217964BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "test\UnitTest\UnitTest.csproj", "{CA5861F3-AA44-4974-B70B-606CBF451343}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest", "test\UnitTest\UnitTest.csproj", "{CA5861F3-AA44-4974-B70B-606CBF451343}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simpleness.Infrastructure.AspNetCore", "src\Simpleness.Utility.AspNetCore\Simpleness.Infrastructure.AspNetCore.csproj", "{16504856-B079-4BEA-8974-78D5737CAE10}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{284FD324-3F95-44E8-AD9F-77FBD1352C52}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simpleness.Infrastructure.Domain", "src\Simpleness.Infrastructure.Domain\Simpleness.Infrastructure.Domain.csproj", "{6AC87C34-5575-4C78-82FC-FB800AD7890D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,16 +55,27 @@ Global
 		{CA5861F3-AA44-4974-B70B-606CBF451343}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA5861F3-AA44-4974-B70B-606CBF451343}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA5861F3-AA44-4974-B70B-606CBF451343}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16504856-B079-4BEA-8974-78D5737CAE10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16504856-B079-4BEA-8974-78D5737CAE10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16504856-B079-4BEA-8974-78D5737CAE10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16504856-B079-4BEA-8974-78D5737CAE10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AC87C34-5575-4C78-82FC-FB800AD7890D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AC87C34-5575-4C78-82FC-FB800AD7890D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AC87C34-5575-4C78-82FC-FB800AD7890D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AC87C34-5575-4C78-82FC-FB800AD7890D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{01978214-BB9E-458E-A083-8ED5C5D0F9A4} = {543DFE4C-FE60-4F6C-AD2E-03274500F861}
+		{01978214-BB9E-458E-A083-8ED5C5D0F9A4} = {284FD324-3F95-44E8-AD9F-77FBD1352C52}
 		{4D45156D-5184-4671-B82D-3B7A8D2FBCF1} = {543DFE4C-FE60-4F6C-AD2E-03274500F861}
 		{9A7E7092-AAF5-4C54-A5F3-E2E1A3C8396E} = {543DFE4C-FE60-4F6C-AD2E-03274500F861}
 		{140FE0F3-17F4-4D1A-AAED-AC0E217964BA} = {543DFE4C-FE60-4F6C-AD2E-03274500F861}
 		{CA5861F3-AA44-4974-B70B-606CBF451343} = {5B19B0B6-F462-4ED8-9026-56FBDD44B970}
+		{16504856-B079-4BEA-8974-78D5737CAE10} = {284FD324-3F95-44E8-AD9F-77FBD1352C52}
+		{284FD324-3F95-44E8-AD9F-77FBD1352C52} = {543DFE4C-FE60-4F6C-AD2E-03274500F861}
+		{6AC87C34-5575-4C78-82FC-FB800AD7890D} = {284FD324-3F95-44E8-AD9F-77FBD1352C52}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {382C7768-875E-4413-A0F0-5AFBB9CE4BC1}

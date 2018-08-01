@@ -1,11 +1,11 @@
-﻿using Simpleness.Utility.Models;
+﻿using Simpleness.Infrastructure.AspNetCore.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
-namespace Simpleness.Utility.Helpers
+namespace Simpleness.Infrastructure.AspNetCore.Extensions 
 {
     /// <summary>
     /// 获取当前登录用户信息

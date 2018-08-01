@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Simpleness.Utility.Authorize
+namespace Simpleness.Infrastructure.AspNetCore.Authorize
 {
     /// <summary>
     /// 自定义授权（基于Policy实现）

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Simpleness.Utility.UserException
+namespace Simpleness.Infrastructure.AspNetCore.UserException 
 {
     /// <summary>
     /// 用户自定义异常

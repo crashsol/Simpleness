@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Simpleness.Utility.Models
+namespace Simpleness.Infrastructure.AspNetCore.Models 
 {
     /// <summary>
     /// 当前登录用户信息

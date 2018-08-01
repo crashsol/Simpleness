@@ -10,6 +10,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Simpleness.DataEntityFramework;
+using Simpleness.DataEntityFramework.Entity;
+
 
 namespace Simpleness.App
 {
@@ -25,6 +30,17 @@ namespace Simpleness.App
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddDbContext<SimplenessDbContext>(option =>
+            {
+                option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+            //identity setting
+            services.AddIdentity<AppUser, AppRole>()
+                .AddEntityFrameworkStores<SimplenessDbContext>()
+                .AddDefaultTokenProviders();
+
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

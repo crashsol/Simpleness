@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>9501e748-a2e0-4774-b94f-26b63b70f155</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,6 +11,14 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Simpleness.Core\Simpleness.Core.csproj" />
+    <ProjectReference Include="..\Simpleness.DataEntityFramework\Simpleness.DataEntityFramework.csproj" />
+    <ProjectReference Include="..\Simpleness.Infrastructure.Domain\Simpleness.Infrastructure.Domain.csproj" />
+    <ProjectReference Include="..\Simpleness.Utility.AspNetCore\Simpleness.Infrastructure.AspNetCore.csproj" />
+    <ProjectReference Include="..\Simpleness.Utility\Simpleness.Utility.csproj" />
   </ItemGroup>
 
 </Project>

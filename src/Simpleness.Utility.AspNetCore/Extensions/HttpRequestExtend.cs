@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Simpleness.Utility.Helpers
+namespace Simpleness.Infrastructure.AspNetCore.Extensions
 {
     /// <summary>
     /// Request扩展方法

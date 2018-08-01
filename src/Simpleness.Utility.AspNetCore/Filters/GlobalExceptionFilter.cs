@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
-using Simpleness.Utility.UserException;
+using Simpleness.Infrastructure.AspNetCore.UserException;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Simpleness.Utility.Filters
+namespace Simpleness.Infrastructure.AspNetCore.Filters
 {
     /// <summary>
     ///全局异常过滤器

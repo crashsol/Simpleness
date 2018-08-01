@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Simpleness.Utility.Authorize
+namespace Simpleness.Infrastructure.AspNetCore.Authorize
 {
     /// <summary>
     /// 用于Policy 自动注册

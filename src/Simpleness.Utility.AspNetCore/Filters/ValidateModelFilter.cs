@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
-using Simpleness.Utility.Helpers;
+using Simpleness.Infrastructure.AspNetCore.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Simpleness.Utility.Filters
+namespace Simpleness.Infrastructure.AspNetCore.Filters 
 {
     /// <summary>
     /// 模型验证过滤器
