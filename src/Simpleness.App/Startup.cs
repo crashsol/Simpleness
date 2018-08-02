@@ -14,7 +14,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Simpleness.DataEntityFramework;
 using Simpleness.DataEntityFramework.Entity;
-
+using Simpleness.Infrastructure.AspNetCore.Filters;
+using Simpleness.Infrastructure.AspNetCore.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Swashbuckle.AspNetCore.Swagger;
+using System.Reflection;
+using System.IO;
 
 namespace Simpleness.App
 {
@@ -40,8 +47,89 @@ namespace Simpleness.App
                 .AddEntityFrameworkStores<SimplenessDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.Configure<IdentityOptions>(option =>
+            {
+                option.Password.RequireUppercase = false;
+            });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+
+            #region JWT配置
+
+            //获取JWT配置
+            var jwtSetting = new JwtSettings();
+            services.Configure<JwtSettings>(Configuration.GetSection("JwtSetting"));
+            Configuration.GetSection("JwtSetting").Bind(jwtSetting);
+
+            //添加Jwt验证
+            services.AddAuthentication(option =>
+            {
+                option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(option =>
+            {
+                option.TokenValidationParameters = new TokenValidationParameters
+                {
+
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSetting.SecretKey)),   //认证秘钥
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtSetting.Issuer,
+                    ValidateAudience = true,
+                    ValidAudience = jwtSetting.Audience,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromMinutes(10),
+                };
+            });
+
+
+            #endregion
+
+
+            services.AddMvc(option =>
+            {
+                //禁止合并AuthorizeFilter
+                option.AllowCombiningAuthorizeFilters = false;
+                //Exception Filter
+                option.Filters.Add(typeof(GlobalExceptionFilter));
+                //validate Filter
+                option.Filters.Add(typeof(ValidateModelFilter));
+
+            }).AddJsonOptions(option =>
+            {
+                //对数据进行转化出错时，抛出异常
+                option.AllowInputFormatterExceptionMessages = true;
+                option.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+                option.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            })
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            #region Swashbuckle Api文档配置
+            services.AddSwaggerGen(option =>
+            {
+                option.SwaggerDoc("v1", new Info
+                {
+                    Version = "v1",
+                    Title = "Simpleness",
+                    Description = "学习使用AspNetCore,Vue"
+                });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPash = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                option.IncludeXmlComments(xmlPash);
+
+                //添加Token
+                option.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = "header",
+                    Type = "apiKey"
+
+
+                });
+
+            });            
+            #endregion
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,7 +144,14 @@ namespace Simpleness.App
                 app.UseHsts();
             }
 
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Simpleness Api");
+            });
+
             app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseMvc();
         }
     }

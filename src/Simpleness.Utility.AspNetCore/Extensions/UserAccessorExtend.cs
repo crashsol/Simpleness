@@ -15,8 +15,8 @@ namespace Simpleness.Infrastructure.AspNetCore.Extensions
         public static UserIdentity UserIdentity(this ClaimsPrincipal User)
         {
             var userIdentity = new UserIdentity();
-            userIdentity.Id = User.Claims.FirstOrDefault(b => b.Type == ClaimTypes.NameIdentifier).Value;
-            userIdentity.UserName = User.Claims.FirstOrDefault(b => b.Type == ClaimTypes.Name).Value;
+            userIdentity.Id = Guid.Parse(User.Claims.FirstOrDefault(b => b.Type =="sub").Value);
+            userIdentity.UserName = User.Claims.FirstOrDefault(b => b.Type == "name").Value;
             return userIdentity;
         }
     }

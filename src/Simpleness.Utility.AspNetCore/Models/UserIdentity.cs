@@ -12,7 +12,7 @@ namespace Simpleness.Infrastructure.AspNetCore.Models
         /// <summary>
         /// 用户ID
         /// </summary>
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         /// <summary>
         /// 用户名称
