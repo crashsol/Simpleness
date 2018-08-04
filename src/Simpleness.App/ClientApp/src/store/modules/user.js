@@ -52,10 +52,11 @@ const user = {
         // 如果token为空
         if (data) {
           var decodeData = jwt.decode(data)
+          console.log(decodeData)
           commit('SET_USERID', decodeData.sub)
           commit('SET_NAME', decodeData.name)
           commit('SET_AVATAR', decodeData.avatar)
-          commit('SET_PERMISSION', decodeData.Permission)
+          commit('SET_PERMISSION', decodeData.permission)
           resolve()
         }
       })

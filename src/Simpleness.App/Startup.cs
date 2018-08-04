@@ -178,7 +178,11 @@ namespace Simpleness.App
             //单页面
             app.UseSpa(spa =>
             {       
-                spa.Options.SourcePath = "ClientApp";              
+                spa.Options.SourcePath = "ClientApp";        
+                if(env.IsDevelopment())
+                {
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:9528");
+                }
             });
         }
     }

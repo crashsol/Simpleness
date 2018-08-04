@@ -74,6 +74,10 @@ namespace Simpleness.App.Controllers
                 claims.Add(new Claim("sub", user.Id.ToString()));
                 claims.Add(new Claim("name", user.UserName));
                 claims.Add(new Claim("avatar", user.Avatar ?? ""));
+                claims.Add(new Claim("permission", "Users"));
+                claims.Add(new Claim("permission", "User_Create"));
+                claims.Add(new Claim("permission", "User_Edit"));
+                claims.Add(new Claim("permission", "User_Delete"));
 
                 //获得 加密后的key
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSetting.SecretKey));
