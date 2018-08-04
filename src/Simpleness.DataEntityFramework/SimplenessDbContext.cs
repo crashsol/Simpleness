@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Simpleness.DataEntityFramework.Entity;
+using Simpleness.Utility.Extensions;
 
 namespace Simpleness.DataEntityFramework
 {
@@ -15,5 +17,16 @@ namespace Simpleness.DataEntityFramework
         {
 
         }
+
+        public DbSet<UserDepartments> UserDepartments { get; set; }
+
+        public DbSet<Department> Departments { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.AddEntityConfigurationFromAssembly(Assembly.GetExecutingAssembly());
+            base.OnModelCreating(builder);
+        }
+
     }
 }

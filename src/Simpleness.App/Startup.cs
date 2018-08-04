@@ -22,6 +22,7 @@ using System.Text;
 using Swashbuckle.AspNetCore.Swagger;
 using System.Reflection;
 using System.IO;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 
 namespace Simpleness.App
 {
@@ -127,8 +128,15 @@ namespace Simpleness.App
 
                 });
 
-            });            
+            });
             #endregion
+
+
+            // In production, the React files will be served from this directory
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/dist";
+            });
 
         }
 
@@ -144,15 +152,34 @@ namespace Simpleness.App
                 app.UseHsts();
             }
 
+           
+            
+            app.UseHttpsRedirection();
+            app.UseCors(option =>
+            {
+                option.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials();
+            });
+
+            //swagger
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Simpleness Api");
             });
-
-            app.UseHttpsRedirection();
+            //认证
             app.UseAuthentication();
+
+
+            //静态文件
+            app.UseStaticFiles(); 
+            app.UseSpaStaticFiles();
+            //mvc管道
             app.UseMvc();
+            //单页面
+            app.UseSpa(spa =>
+            {       
+                spa.Options.SourcePath = "ClientApp";              
+            });
         }
     }
 }

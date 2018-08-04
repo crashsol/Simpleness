@@ -4,4 +4,17 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="User\" />
+    <Folder Include="Role\" />
+    <Folder Include="Department\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Simpleness.DataEntityFramework\Simpleness.DataEntityFramework.csproj" />
+    <ProjectReference Include="..\Simpleness.Infrastructure.Domain\Simpleness.Infrastructure.Domain.csproj" />
+    <ProjectReference Include="..\Simpleness.Utility.AspNetCore\Simpleness.Infrastructure.AspNetCore.csproj" />
+    <ProjectReference Include="..\Simpleness.Utility\Simpleness.Utility.csproj" />
+  </ItemGroup>
+
 </Project>

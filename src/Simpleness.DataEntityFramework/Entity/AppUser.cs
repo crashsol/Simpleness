@@ -15,11 +15,13 @@ namespace Simpleness.DataEntityFramework.Entity
         /// <summary>
         /// 头像
         /// </summary>
-        public string Avator { get; set; }
+        public string Avatar { get; set; } 
 
         /// <summary>
         /// 昵称
         /// </summary>
         public string NickName { get; set; }
+
+        public ICollection<UserDepartments> UserDepartments { get; set; }
     }
 }
