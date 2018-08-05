@@ -17,14 +17,14 @@ namespace Simpleness.Core.User
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task CreateUser(UserCDto dto);
+        Task CreateUserAsync(UserCDto dto);
 
 
         /// <summary>
         /// 获取系统所有用户列表
         /// </summary>
         /// <returns></returns>
-        Task<List<UserListDto>> GetAllUsers();
+        Task<List<UserListDto>> GetAllUsersAsync();
 
 
         

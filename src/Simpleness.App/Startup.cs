@@ -23,6 +23,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using System.Reflection;
 using System.IO;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Simpleness.Core.User;
 
 namespace Simpleness.App
 {
@@ -65,8 +66,9 @@ namespace Simpleness.App
             //添加Jwt验证
             services.AddAuthentication(option =>
             {
-                option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(option =>
+                option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,option =>
             {
                 option.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -130,6 +132,14 @@ namespace Simpleness.App
 
             });
             #endregion
+
+
+            #region 应用层服务注入
+
+            services.AddTransient<IUserService, UserService>();
+
+            #endregion
+
 
 
             // In production, the React files will be served from this directory

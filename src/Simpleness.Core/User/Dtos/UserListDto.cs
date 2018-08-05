@@ -9,7 +9,7 @@ namespace Simpleness.Core.User.Dtos
     /// </summary>
     public class UserListDto
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         public string UserName { get; set; }
 

@@ -16,4 +16,10 @@
     <ProjectReference Include="..\Simpleness.Utility\Simpleness.Utility.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="System.Web">
+      <HintPath>System.Web</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
