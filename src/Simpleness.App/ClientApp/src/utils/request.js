@@ -32,11 +32,26 @@ service.interceptors.response.use(
     if (error.response) {
       var res = error.response
       // 400 404 ,500错误
-      if (res.status === 400 || res.status === 404 || res.status === 500) {
+      if (res.status === 400) {
         Message({
           message: res.data,
           type: 'error',
-          duration: 5 * 1000
+          duration: 5 * 3000
+        })
+      }
+
+      if (res.status === 404) {
+        Message({
+          message: '访问地址不存在',
+          type: 'error',
+          duration: 5 * 3000
+        })
+      }
+      if (res.status === 500) {
+        Message({
+          message: '服务器错误',
+          type: 'error',
+          duration: 5 * 3000
         })
       }
       // 未授权
@@ -63,11 +78,10 @@ service.interceptors.response.use(
         })
       }
     } else {
-      console.log(error)
       Message({
         message: error.message || '网络异常',
         type: 'error',
-        duration: 5 * 1000
+        duration: 5 * 3000
       })
     }
     return Promise.reject(error)

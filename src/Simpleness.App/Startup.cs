@@ -151,8 +151,6 @@ namespace Simpleness.App
             {
                 app.UseHsts();
             }
-
-           
             
             app.UseHttpsRedirection();
             app.UseCors(option =>
