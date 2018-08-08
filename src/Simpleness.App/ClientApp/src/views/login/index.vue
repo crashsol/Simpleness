@@ -55,17 +55,17 @@ export default {
       }
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate(async(valid) => {
         if (valid) {
-          this.loading = true
-          this.$store.dispatch('Login', this.loginForm).then(() => {
+          try {
+            this.loading = true
+            await this.$store.dispatch('Login', this.loginForm)
             this.loading = false
             this.$router.push({ path: '/' })
-          }).catch(() => {
+          } catch (error) {
             this.loading = false
-          })
+          }
         } else {
-          console.log('error submit!!')
           return false
         }
       })

@@ -1,5 +1,11 @@
-import { login, logout } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import {
+  login
+} from '@/api/login'
+import {
+  getToken,
+  setToken,
+  removeToken
+} from '@/utils/auth'
 import jwt from 'jsonwebtoken'
 /* 用户状态管理器 */
 const user = {
@@ -31,21 +37,32 @@ const user = {
 
   actions: {
     // 登录
-    Login({ commit }, userInfo) {
+    async Login({ commit }, userInfo) {
       const username = userInfo.username.trim()
-      return new Promise((resolve, reject) => {
-        login(username, userInfo.password).then(data => {
+      try {
+        const data = await login(username, userInfo.password)
+        setToken(data.token)
+        commit('SET_TOKEN', data.token)
+        return new Promise((resolve, reject) => { resolve() })
+      } catch (error) {
+        console.log(error)
+        return new Promise((resolve, reject) => { reject() })
+      }
+
+      /*  login(username, userInfo.password).then(data => {
           // 登录成功后，获取token,并加cookies保存起来
           setToken(data.token)
           commit('SET_TOKEN', data.token)
           resolve()
         }).catch(error => {
           reject(error)
-        })
-      })
+        }) */
     },
     // 获取用户信息
-    GetInfo({ commit, state }) {
+    GetInfo({
+      commit,
+      state
+    }) {
       return new Promise((resolve) => {
         // 登录成功后，获取token,并加cookies保存起来
         var data = getToken()
@@ -64,20 +81,14 @@ const user = {
 
     // 登出
     LogOut({ commit, state }) {
-      return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
-          commit('SET_TOKEN', '')
-          commit('SET_PERMISSION', [])
-          removeToken()
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
-      })
+      commit('SET_TOKEN', '')
+      commit('SET_PERMISSION', [])
+      removeToken()
     },
-
     // 前端 登出
-    FedLogOut({ commit }) {
+    FedLogOut({
+      commit
+    }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
         removeToken()

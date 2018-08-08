@@ -90,14 +90,11 @@ export default {
     /* 锁定/解锁 */
     handleLocked(id) {
 
-    },
-    async allUsers() {
-      const users = await getUsers()
-      this.users = users
     }
   },
-  mounted() {
-    this.allUsers()
+  async mounted() {
+    const users = await getUsers()
+    this.users = users
   }
 }
 </script>

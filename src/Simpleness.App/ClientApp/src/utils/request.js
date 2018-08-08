@@ -23,25 +23,25 @@ service.interceptors.request.use(config => {
   return config
 }, error => {
   // Do something with request error
-  console.log(error) // for debug
+  console.log(error)
   Promise.reject(error)
 })
 
 // respone拦截器
 service.interceptors.response.use(
   response => {
-    console.log('请求成功：' + response.data)
     return response.data
   },
   error => {
     if (error.response) {
+      console.log(error.response)
       var res = error.response
       // 400 404 ,500错误
       if (res.status === 400) {
         Message({
           message: res.data,
           type: 'error',
-          duration: 5 * 3000
+          duration: 3 * 1000
         })
       }
 
@@ -49,14 +49,14 @@ service.interceptors.response.use(
         Message({
           message: '访问地址不存在',
           type: 'error',
-          duration: 5 * 3000
+          duration: 3 * 1000
         })
       }
       if (res.status === 500) {
         Message({
           message: '服务器错误',
           type: 'error',
-          duration: 5 * 3000
+          duration: 3 * 1000
         })
       }
       // 未授权
@@ -86,10 +86,10 @@ service.interceptors.response.use(
       Message({
         message: error.message || '网络异常',
         type: 'error',
-        duration: 5 * 3000
+        duration: 1 * 3000
       })
     }
-    return Promise.reject(error)
+    return Promise.reject('请求后台出错')
   }
 )
 
