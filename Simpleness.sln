@@ -13,17 +13,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simpleness.DataEntityFramew
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simpleness.Core", "src\Simpleness.Core\Simpleness.Core.csproj", "{9A7E7092-AAF5-4C54-A5F3-E2E1A3C8396E}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{AB6E06FC-5401-4C4F-A070-D846BD592459}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simpleness.App", "src\Simpleness.App\Simpleness.App.csproj", "{140FE0F3-17F4-4D1A-AAED-AC0E217964BA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest", "test\UnitTest\UnitTest.csproj", "{CA5861F3-AA44-4974-B70B-606CBF451343}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simpleness.Infrastructure.AspNetCore", "src\Simpleness.Utility.AspNetCore\Simpleness.Infrastructure.AspNetCore.csproj", "{16504856-B079-4BEA-8974-78D5737CAE10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simpleness.Infrastructure.AspNetCore", "src\Simpleness.Utility.AspNetCore\Simpleness.Infrastructure.AspNetCore.csproj", "{16504856-B079-4BEA-8974-78D5737CAE10}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{284FD324-3F95-44E8-AD9F-77FBD1352C52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simpleness.Infrastructure.Domain", "src\Simpleness.Infrastructure.Domain\Simpleness.Infrastructure.Domain.csproj", "{6AC87C34-5575-4C78-82FC-FB800AD7890D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simpleness.Infrastructure.Domain", "src\Simpleness.Infrastructure.Domain\Simpleness.Infrastructure.Domain.csproj", "{6AC87C34-5575-4C78-82FC-FB800AD7890D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,10 +41,6 @@ Global
 		{9A7E7092-AAF5-4C54-A5F3-E2E1A3C8396E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A7E7092-AAF5-4C54-A5F3-E2E1A3C8396E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A7E7092-AAF5-4C54-A5F3-E2E1A3C8396E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AB6E06FC-5401-4C4F-A070-D846BD592459}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB6E06FC-5401-4C4F-A070-D846BD592459}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB6E06FC-5401-4C4F-A070-D846BD592459}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB6E06FC-5401-4C4F-A070-D846BD592459}.Release|Any CPU.Build.0 = Release|Any CPU
 		{140FE0F3-17F4-4D1A-AAED-AC0E217964BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{140FE0F3-17F4-4D1A-AAED-AC0E217964BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{140FE0F3-17F4-4D1A-AAED-AC0E217964BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
