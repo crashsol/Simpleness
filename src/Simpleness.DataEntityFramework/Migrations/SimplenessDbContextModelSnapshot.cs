@@ -190,7 +190,7 @@ namespace Simpleness.DataEntityFramework.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Desc")
+                    b.Property<string>("Description")
                         .HasMaxLength(255);
 
                     b.Property<string>("FullPath")

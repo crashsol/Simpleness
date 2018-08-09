@@ -10,6 +10,7 @@ using Simpleness.DataEntityFramework.Entity;
 using Simpleness.Infrastructure.AspNetCore.UserException;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace Simpleness.Core.User
 {
@@ -20,8 +21,9 @@ namespace Simpleness.Core.User
 
         public UserService(SimplenessDbContext dbContext, ILogger<UserService> logger,
               IHttpContextAccessor httpContextAccessor,
-              UserManager<AppUser> userManager
-              ) : base(dbContext, logger, httpContextAccessor)
+              UserManager<AppUser> userManager,
+              IMapper mapper
+              ) : base(dbContext, logger,mapper, httpContextAccessor)
         {
             _userManager = userManager;
         }

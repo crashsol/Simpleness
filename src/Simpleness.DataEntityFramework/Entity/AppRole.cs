@@ -6,7 +6,7 @@ using System.Text;
 namespace Simpleness.DataEntityFramework.Entity
 {
     public class AppRole:IdentityRole<Guid>
-    {
+    {        
 
         public AppRole(string name) : base(name) { }
         /// <summary>

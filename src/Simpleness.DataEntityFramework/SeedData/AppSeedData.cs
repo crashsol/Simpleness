@@ -47,8 +47,10 @@ namespace Simpleness.DataEntityFramework.SeedData
             //创建系统角色
             if (!_dbcontext.Roles.Any())
             {
-                var role = new AppRole("超级管理员");
-                role.Description = "具有系统所有权限";
+                var role = new AppRole("超级管理员")
+                {                    
+                    Description = "具有系统所有权限"
+                };
 
                 var result = await _roleManager.CreateAsync(role);
                 if (result.Succeeded)

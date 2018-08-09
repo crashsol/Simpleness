@@ -6,6 +6,7 @@ using System.Text;
 
 namespace Simpleness.Infrastructure.AspNetCore.Authorize
 {
+    [AttributeUsage(AttributeTargets.All,AllowMultiple =false,Inherited =false)]
     /// <summary>
     /// 自定义授权（基于Policy实现）
     /// </summary>
@@ -27,7 +28,6 @@ namespace Simpleness.Infrastructure.AspNetCore.Authorize
             Name = name;
             Description = description;
         }
-
 
         /// <summary>
         /// 权限前台显示名称

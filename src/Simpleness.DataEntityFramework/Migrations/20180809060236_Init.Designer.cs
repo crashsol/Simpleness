@@ -10,7 +10,7 @@ using Simpleness.DataEntityFramework;
 namespace Simpleness.DataEntityFramework.Migrations
 {
     [DbContext(typeof(SimplenessDbContext))]
-    [Migration("20180801130302_Init")]
+    [Migration("20180809060236_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -137,7 +137,7 @@ namespace Simpleness.DataEntityFramework.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
-                    b.Property<string>("Avator");
+                    b.Property<string>("Avatar");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -187,6 +187,46 @@ namespace Simpleness.DataEntityFramework.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("Simpleness.DataEntityFramework.Entity.Department", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255);
+
+                    b.Property<string>("FullPath")
+                        .IsRequired()
+                        .HasMaxLength(255);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(40);
+
+                    b.Property<float>("Order");
+
+                    b.Property<Guid>("Pid");
+
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("FullPath");
+
+                    b.ToTable("Department");
+                });
+
+            modelBuilder.Entity("Simpleness.DataEntityFramework.Entity.UserDepartments", b =>
+                {
+                    b.Property<Guid>("AppUserId");
+
+                    b.Property<Guid>("DepartmentId");
+
+                    b.HasKey("AppUserId", "DepartmentId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.ToTable("UserDepartment");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("Simpleness.DataEntityFramework.Entity.AppRole")
@@ -229,6 +269,19 @@ namespace Simpleness.DataEntityFramework.Migrations
                     b.HasOne("Simpleness.DataEntityFramework.Entity.AppUser")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Simpleness.DataEntityFramework.Entity.UserDepartments", b =>
+                {
+                    b.HasOne("Simpleness.DataEntityFramework.Entity.AppUser", "AppUser")
+                        .WithMany("UserDepartments")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Simpleness.DataEntityFramework.Entity.Department", "Department")
+                        .WithMany("UserDepartments")
+                        .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Simpleness.Utility.Extensions
+namespace Simpleness.Infrastructure.AspNetCore.Extensions
 {
     /// <summary>
     ///https://stackoverflow.com/questions/37895278/how-to-load-assemblies-located-in-a-folder-in-net-core-console-app

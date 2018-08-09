@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Simpleness.Utility.Extensions
+namespace Simpleness.DataEntityFramework
 {
     public static class EntityModelBuilderExtenions
     {

@@ -1,15 +1,11 @@
-﻿using System;
+﻿using System.Reflection;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Simpleness.DataEntityFramework;
@@ -20,10 +16,17 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Swashbuckle.AspNetCore.Swagger;
-using System.Reflection;
 using System.IO;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Simpleness.Core.User;
+using Simpleness.Core.Role;
+using AutoMapper;
+using Simpleness.Core.Department;
+using Simpleness.Utility.CommonDto;
+using System.Linq;
+using Simpleness.App.Controllers;
+using Simpleness.Infrastructure.AspNetCore.Authorize;
+using Microsoft.AspNetCore.Authorization;
+using Simpleness.Core;
 
 namespace Simpleness.App
 {
@@ -68,43 +71,24 @@ namespace Simpleness.App
             {
                 option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,option =>
-            {
-                option.TokenValidationParameters = new TokenValidationParameters
-                {
+            }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, option =>
+             {
+                 option.TokenValidationParameters = new TokenValidationParameters
+                 {
 
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSetting.SecretKey)),   //认证秘钥
-                    ValidateIssuer = true,
-                    ValidIssuer = jwtSetting.Issuer,
-                    ValidateAudience = true,
-                    ValidAudience = jwtSetting.Audience,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromMinutes(10),
-                };
-            });
+                     ValidateIssuerSigningKey = true,
+                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSetting.SecretKey)),   //认证秘钥
+                     ValidateIssuer = true,
+                     ValidIssuer = jwtSetting.Issuer,
+                     ValidateAudience = true,
+                     ValidAudience = jwtSetting.Audience,
+                     ValidateLifetime = true,
+                     ClockSkew = TimeSpan.FromMinutes(10),
+                 };
+             });
 
 
             #endregion
-
-
-            services.AddMvc(option =>
-            {
-                //禁止合并AuthorizeFilter
-                option.AllowCombiningAuthorizeFilters = false;
-                //Exception Filter
-                option.Filters.Add(typeof(GlobalExceptionFilter));
-                //validate Filter
-                option.Filters.Add(typeof(ValidateModelFilter));
-
-            }).AddJsonOptions(option =>
-            {
-                //对数据进行转化出错时，抛出异常
-                option.AllowInputFormatterExceptionMessages = true;
-                option.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
-                option.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-            })
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             #region Swashbuckle Api文档配置
             services.AddSwaggerGen(option =>
@@ -126,27 +110,52 @@ namespace Simpleness.App
                     Name = "Authorization",
                     In = "header",
                     Type = "apiKey"
-
-
+                });
+                //添加Requirement,必须添加
+                option.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>
+                {
+                    {"Bearer",new string[]{ } }
                 });
 
             });
+            #endregion          
+
+            #region AutoMapper
+            services.AddAutoMapper();
             #endregion
+           
+            //应用层服务注入
+            services.AddServiceLayer();
 
-
-            #region 应用层服务注入
-
-            services.AddTransient<IUserService, UserService>();
-
-            #endregion
-
-
+            //注入PolicyProvider
+            services.AddPermissions(Assembly.GetExecutingAssembly(), typeof(BaseController));
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+
+            services.AddMvc(option =>
+            {
+                //禁止合并AuthorizeFilter
+                option.AllowCombiningAuthorizeFilters = false;
+                //Exception Filter
+                option.Filters.Add(typeof(GlobalExceptionFilter));
+                //validate Filter
+                option.Filters.Add(typeof(ValidateModelFilter));
+
+            }).AddJsonOptions(option =>
+            {
+                //对数据进行转化出错时，抛出异常
+                option.AllowInputFormatterExceptionMessages = true;
+                option.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+                option.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            })
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+         
 
         }
 
@@ -156,42 +165,41 @@ namespace Simpleness.App
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                //swagger
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Simpleness Api");
+                });
+                app.UseCors(option =>
+                {
+                    option.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials();
+                });
             }
             else
             {
                 app.UseHsts();
+                app.UseHttpsRedirection();
             }
-            
-            app.UseHttpsRedirection();
-            app.UseCors(option =>
-            {
-                option.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials();
-            });
 
-            //swagger
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Simpleness Api");
-            });
             //认证
             app.UseAuthentication();
 
-
             //静态文件
-            app.UseStaticFiles(); 
+            app.UseStaticFiles();
             app.UseSpaStaticFiles();
             //mvc管道
             app.UseMvc();
             //单页面
             app.UseSpa(spa =>
-            {       
-                spa.Options.SourcePath = "ClientApp";        
-                if(env.IsDevelopment())
+            {
+                spa.Options.SourcePath = "ClientApp";
+                if (env.IsDevelopment())
                 {
                     spa.UseProxyToSpaDevelopmentServer("http://localhost:9528");
                 }
             });
         }
+
     }
 }
