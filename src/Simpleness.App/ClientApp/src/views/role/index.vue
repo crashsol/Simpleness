@@ -5,10 +5,7 @@
 </template>
 
 <script>
-import { roleList, roleCreate, roleUpdate
-  , roleDelete, getRoleUsers, updateRoleUsers,
-  getRolePermissions, updateRolePermissions
-} from '../../api/role.js'
+import { roleList } from '../../api/role.js'
 export default {
   data() {
     return {
@@ -16,7 +13,7 @@ export default {
     }
   },
   methods: {
-    getRoles: async() => {
+    async getRoles() {
       const result = await roleList()
       console.log(result)
     }
@@ -28,5 +25,4 @@ export default {
 </script>
 
 <style>
-
 </style>
