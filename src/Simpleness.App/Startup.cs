@@ -143,8 +143,8 @@ namespace Simpleness.App
                 option.AllowCombiningAuthorizeFilters = false;
                 //Exception Filter
                 option.Filters.Add(typeof(GlobalExceptionFilter));
-                //validate Filter
-                option.Filters.Add(typeof(ValidateModelFilter));
+                //使用ApiController标记了控制器，会默认验证模型，如果验证不通过会BadRequest(ModelState);
+                //option.Filters.Add(typeof(ValidateModelFilter));
 
             }).AddJsonOptions(option =>
             {

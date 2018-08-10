@@ -50,7 +50,7 @@ namespace Simpleness.App.Controllers
         [ProducesResponseType(400)]      
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> LoginAsync([FromBody]LoginViewModel model)
+        public async Task<IActionResult> LoginAsync(LoginViewModel model)
         {
 
             var user = await _dbContext.Users.FirstOrDefaultAsync(b => b.UserName == model.UserName || b.Email == model.UserName);
