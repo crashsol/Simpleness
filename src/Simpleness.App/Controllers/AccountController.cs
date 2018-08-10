@@ -71,13 +71,30 @@ namespace Simpleness.App.Controllers
                                                     .Select(d => new Claim(d.c.ClaimType, d.c.ClaimValue)).ToListAsync();
                 var claims = roleClaims.Union(userclaims).Distinct().ToList();
 
+               
                 claims.Add(new Claim("sub", user.Id.ToString()));
                 claims.Add(new Claim("name", user.UserName));
                 claims.Add(new Claim("avatar", user.Avatar ?? ""));
-                claims.Add(new Claim("permission", "Users"));
-                claims.Add(new Claim("permission", "User_Create"));
-                claims.Add(new Claim("permission", "User_Edit"));
-                claims.Add(new Claim("permission", "User_Delete"));
+
+                //mock admin permission
+                if (user.UserName =="admin@qq.com")
+                {
+                    claims.Add(new Claim("permission", nameof(PermissionSettings.Users)));
+                    claims.Add(new Claim("permission", nameof(PermissionSettings.Users_Create)));
+                    claims.Add(new Claim("permission", nameof(PermissionSettings.Users_Delete)));
+                    claims.Add(new Claim("permission", nameof(PermissionSettings.Users_Locked)));
+                    claims.Add(new Claim("permission", nameof(PermissionSettings.Roles)));
+                    claims.Add(new Claim("permission", nameof(PermissionSettings.Roles_Create)));
+                    claims.Add(new Claim("permission", nameof(PermissionSettings.Roles_Delete)));
+                    claims.Add(new Claim("permission", nameof(PermissionSettings.Roles_Edit)));
+                    claims.Add(new Claim("permission", nameof(PermissionSettings.Roles_Memeber)));
+                    claims.Add(new Claim("permission", nameof(PermissionSettings.Roles_Permission)));
+                    claims.Add(new Claim("permission", nameof(PermissionSettings.Departments)));
+                    claims.Add(new Claim("permission", nameof(PermissionSettings.Departments_Create)));
+                    claims.Add(new Claim("permission", nameof(PermissionSettings.Departments_Delete)));
+                    claims.Add(new Claim("permission", nameof(PermissionSettings.Departments_Edit)));
+                }
+            
 
                 //获得 加密后的key
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSetting.SecretKey));
