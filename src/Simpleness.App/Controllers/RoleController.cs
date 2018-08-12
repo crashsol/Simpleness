@@ -29,7 +29,7 @@ namespace Simpleness.App.Controllers
             return Ok(await _roleService.RoleListsAsync());
         }
 
-     
+
         /// <summary>
         /// 创建角色
         /// </summary>
@@ -43,7 +43,7 @@ namespace Simpleness.App.Controllers
             return Ok(await _roleService.CreateAsync(dto));
         }
 
-       
+
         /// <summary>
         /// 更新角色信息
         /// </summary>
@@ -55,7 +55,7 @@ namespace Simpleness.App.Controllers
         public async Task<IActionResult> UpdateAsync([FromBody]RoleUDto dto)
         {
             await _roleService.UpdateAsync(dto);
-            return Ok("更新成功");
+            return Ok();
         }
 
 
@@ -67,15 +67,16 @@ namespace Simpleness.App.Controllers
         /// <returns></returns>
 
         [HttpPost("delete/{id}")]
-        [ProducesResponseType(200)]      
+        [ProducesResponseType(200)]
         [Permission(nameof(PermissionSettings.Roles_Delete), PermissionSettings.Roles_Delete)]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> DeleteAsync(Guid id)
         {
-            return Ok("删除成功");
+            await _roleService.DeleteAsync(id);
+            return Ok();
         }
 
 
-       
+
         /// <summary>
         /// 获取角色所有成员
         /// </summary>
@@ -89,7 +90,7 @@ namespace Simpleness.App.Controllers
             return Ok(await _roleService.GetRoleUsersByRoleIdAsync(id));
         }
 
-      
+
         /// <summary>
         /// 更新角色成员
         /// </summary>
@@ -110,8 +111,8 @@ namespace Simpleness.App.Controllers
         /// <param name="id">角色ID</param>
         /// <returns></returns>
         [HttpGet("permission/{id}")]
-        [ProducesResponseType(typeof(TreeDto<string>),200)]
-        [Permission(nameof(PermissionSettings.Roles_Permission),PermissionSettings.Roles_Permission)]
+        [ProducesResponseType(typeof(TreeDto<string>), 200)]
+        [Permission(nameof(PermissionSettings.Roles_Permission), PermissionSettings.Roles_Permission)]
         public async Task<IActionResult> GetRolePermissionByIdAsync(Guid id)
         {
             return Ok(await _roleService.GetRolePermissionAsync(id));
@@ -123,7 +124,7 @@ namespace Simpleness.App.Controllers
         /// <param name="dto">更新权限Dto</param>
         /// <returns></returns>
         [HttpPost("permission")]
-        [ProducesResponseType(typeof(string),200)]
+        [ProducesResponseType(typeof(string), 200)]
         [Permission(nameof(PermissionSettings.Roles_Permission), PermissionSettings.Roles_Permission)]
         public async Task<IActionResult> UpdateRolePersmissionAsync([FromBody]RolePermissionDto dto)
         {

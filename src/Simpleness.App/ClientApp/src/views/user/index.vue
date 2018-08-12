@@ -11,7 +11,7 @@
                 <el-input v-model="queryParams.phone" placeholder="手机号"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="onSubmit">查询</el-button>
+                <el-button type="primary" @click="onSubmit">查询</el-button>success
             </el-form-item>
         </el-form>
 
@@ -26,12 +26,12 @@
             </el-table-column>
              <el-table-column prop="lockoutEnd" label="账号状态">
                <template slot-scope="scope">
-                  <el-tag type="scope.row.lockoutEnd? 'danger':'success'">{{scope.row.lockoutEnd ?'锁定':'正常'}}</el-tag>   
+                  <el-tag type="scope.row.lockoutEnd? 'danger':'success'">{{scope.row.lockoutEnd ?'锁定':'正常'}}</el-tag>
                   <template v-if="scope.row.lockoutEnd">
-                    <i class="el-icon-time"></i>                    
-                  </template>            
+                    <i class="el-icon-time"></i>
+                  </template>
                </template>
-            </el-table-column>           
+            </el-table-column>
             <el-table-column label="操作" width="300">
                 <template slot-scope="scope">
                     <el-button @click="handleEdit(scope.row.id)" type="success" size="mini">编辑</el-button>

@@ -23,6 +23,11 @@ export default {
     close: '关闭',
     closeOthers: '关闭其它',
     closeAll: '关闭所有'
+  },
+  table: {
+    cancel: '取 消',
+    confirm: '确 定 '
   }
+
 }
 

@@ -20,6 +20,10 @@ export default {
     close: 'Close',
     closeOthers: 'Close Others',
     closeAll: 'Close All'
+  },
+  table: {
+    cancel: 'Cancel',
+    confirm: 'Confirm '
   }
 }
 
