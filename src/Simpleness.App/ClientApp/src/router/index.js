@@ -78,6 +78,12 @@ export const asyncRouterMap = [
         name: 'role',
         component: () => import('@/views/role/index'),
         meta: { title: 'roles', icon: 'role', permission: 'Roles' }
+      },
+      {
+        path: 'departments',
+        name: 'departments',
+        component: () => import('@/views/department/index'),
+        meta: { title: 'departments', icon: 'department', permission: 'Departments' }
       }
     ]
   },

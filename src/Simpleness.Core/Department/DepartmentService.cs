@@ -34,7 +34,7 @@ namespace Simpleness.Core.Department
                 throw new UserOperationException("上级部门不存在");
             }
             var entity = _mapper.Map<DepartmentEntity>(dto);
-            entity.FullPath = parient.FullPath + "_" + entity.Name;
+            entity.FullPath = parient.FullPath + "/" + entity.Name;
             try
             {
                 await _dbContent.AddAsync(entity);
@@ -52,16 +52,18 @@ namespace Simpleness.Core.Department
 
         public async Task DeleteAsync(Guid id)
         {
+            var entity =await _dbContent.Departments.FindAsync(id);
+            if (entity == null)
+                throw new UserOperationException("部门不存在");
             var allEntity = await _dbContent.Departments.
-                                        Where(b => b.FullPath.StartsWith(
-                                            _dbContent.Departments.Find(id).FullPath)).ToListAsync();
+                                        Where(b => b.FullPath.StartsWith(entity.FullPath)).ToListAsync();
             _dbContent.RemoveRange(allEntity);
             await _dbContent.SaveChangesAsync();
         }
 
         public async Task<List<DepartmentRDto>> DepartmentListAsync()
         {
-           return _mapper.Map<List<DepartmentRDto>>( await _dbContent.Departments.AsNoTracking().ToListAsync());
+           return _mapper.Map<List<DepartmentRDto>>( await _dbContent.Departments.AsNoTracking().OrderBy(b => b.Order).OrderBy(b=>b.FullPath).ToListAsync());
         }
 
         public async Task<DepartmentUDto> GetDepartmentByIdAsync(Guid id)
@@ -88,7 +90,7 @@ namespace Simpleness.Core.Department
             entity.Name = dto.Name;
             entity.Order = dto.Order;
             entity.Description = dto.Description;
-            entity.FullPath = parent.FullPath + "_" + dto.Name;
+            entity.FullPath = parent.FullPath + "/" + dto.Name;
 
             //检查当前节点的子节点
             var children = await _dbContent.Departments
@@ -97,6 +99,7 @@ namespace Simpleness.Core.Department
             {
                 item.FullPath = item.FullPath.Replace(oldEntityFullPath, entity.FullPath);               
             }
+            _dbContent.Departments.UpdateRange(entity);
             _dbContent.Departments.UpdateRange(children);
             await _dbContent.SaveChangesAsync();
         }

@@ -3,7 +3,8 @@ export default {
     dashboard: '首页',
     system: '系统管理',
     users: '用户管理',
-    roles: '管理员管理',
+    roles: '角色管理',
+    departments: '部门管理',
     userinfo: '个人信息',
     changepwd: '修改密码'
   },

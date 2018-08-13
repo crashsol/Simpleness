@@ -10,7 +10,7 @@ using Simpleness.DataEntityFramework;
 namespace Simpleness.DataEntityFramework.Migrations
 {
     [DbContext(typeof(SimplenessDbContext))]
-    [Migration("20180809060236_Init")]
+    [Migration("20180813133516_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -209,7 +209,8 @@ namespace Simpleness.DataEntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("FullPath");
+                    b.HasIndex("FullPath")
+                        .IsUnique();
 
                     b.ToTable("Department");
                 });

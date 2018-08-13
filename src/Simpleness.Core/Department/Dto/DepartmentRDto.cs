@@ -16,6 +16,17 @@ namespace Simpleness.Core.Department.Dto
 
         public string Description { get; set; }
 
-        public string FullPath { get; set; }        
+        public string FullPath { get; set; }
+
+        /// <summary>
+        /// 部门排序
+        /// </summary>
+        public float Order { get; set; }
+
+        /// <summary>
+        /// 上级部门名称
+        /// </summary>
+        public Guid Pid { get; set; }
+
     }
 }

@@ -62,6 +62,19 @@ namespace Simpleness.DataEntityFramework.SeedData
                     _logger.LogError($"初始化系统角色出错:{string.Join(',', result.Errors)}");
                 }
             }
+
+            if(!_dbcontext.Departments.Any())
+            {
+                _dbcontext.Departments.Add(new Department {
+
+                     Name="组织架构",
+                     Description = "部门组织结构",
+                     Order = 99,
+                     FullPath= "组织架构"
+                });
+                _dbcontext.SaveChanges();
+
+            }
         }
     }
 }

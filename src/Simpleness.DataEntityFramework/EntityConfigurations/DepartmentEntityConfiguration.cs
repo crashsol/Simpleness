@@ -15,7 +15,7 @@ namespace Simpleness.DataEntityFramework.EntityConfigurations
             builder.Property(b => b.Description).HasMaxLength(PropertyDefinition.Large);
             builder.Property(b => b.Name).HasMaxLength(PropertyDefinition.Small).IsRequired();
             builder.Property(b => b.FullPath).HasMaxLength(PropertyDefinition.Large).IsRequired();
-            builder.HasAlternateKey(b => b.FullPath);          
+            builder.HasIndex(b => b.FullPath).IsUnique();
            
         }
     }

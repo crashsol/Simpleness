@@ -207,7 +207,8 @@ namespace Simpleness.DataEntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("FullPath");
+                    b.HasIndex("FullPath")
+                        .IsUnique();
 
                     b.ToTable("Department");
                 });

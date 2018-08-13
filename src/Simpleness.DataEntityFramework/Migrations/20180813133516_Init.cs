@@ -65,7 +65,6 @@ namespace Simpleness.DataEntityFramework.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Department", x => x.Id);
-                    table.UniqueConstraint("AK_Department_FullPath", x => x.FullPath);
                 });
 
             migrationBuilder.CreateTable(
@@ -236,6 +235,12 @@ namespace Simpleness.DataEntityFramework.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Department_FullPath",
+                table: "Department",
+                column: "FullPath",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserDepartment_DepartmentId",
