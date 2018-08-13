@@ -61,6 +61,22 @@ namespace Simpleness.App.Controllers
             return Ok("更新成功");
         }
 
+
+
+        /// <summary>
+        /// 删除部门及所有子部门
+        /// </summary>
+        /// <param name="id">部门ID</param>
+        /// <returns></returns>
+        [HttpPost("delete/{id}")]
+        [ProducesResponseType(200)]
+        [Permission(nameof(PermissionSettings.Departments_Delete),PermissionSettings.Departments_Delete)]  
+        public async Task<IActionResult> DeleteAsync(Guid id)
+        {
+            await _departmentService.DeleteAsync(id);
+            return Ok();
+        }
+
         /// <summary>
         /// 获取指定部门成员
         /// </summary>
@@ -77,7 +93,7 @@ namespace Simpleness.App.Controllers
         /// <param name="dto"><see cref="DepartmentUsersDto"/><paramref name="dto"/></param>
         /// <returns></returns>
         [HttpPost("users")]
-        [ProducesResponseType(typeof(string), 200)]     
+        [ProducesResponseType(typeof(string), 200)]
         [Permission(nameof(PermissionSettings.Deaprtments_Member), PermissionSettings.Deaprtments_Member)]
         public async Task<IActionResult> UpdateDepartUsersAsync([FromBody]DepartmentUsersDto dto)
         {

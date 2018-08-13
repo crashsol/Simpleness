@@ -37,7 +37,7 @@ namespace Simpleness.App.Controllers
         /// <returns></returns>
         [HttpPost("create")]
         [ProducesResponseType(typeof(string), 200)]
-        [Permission(nameof(PermissionSettings.Roles), PermissionSettings.Roles)]
+        [Permission(nameof(PermissionSettings.Roles_Create), PermissionSettings.Roles_Create)]
         public async Task<IActionResult> CreateAsync([FromBody]RoleCDto dto)
         {
             return Ok(await _roleService.CreateAsync(dto));

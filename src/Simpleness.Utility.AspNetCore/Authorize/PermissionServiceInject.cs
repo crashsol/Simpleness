@@ -32,7 +32,7 @@ namespace Simpleness.Infrastructure.AspNetCore.Authorize
                 Children = new List<TreeItem<string>>()
             };
             //获取所有的控制器
-            var controllers = Assembly.GetExecutingAssembly().GetTypes().Where(b => controllerBaseType.IsAssignableFrom(b));
+            var controllers = assemeble.GetTypes().Where(b => controllerBaseType.IsAssignableFrom(b));
             foreach (var controller in controllers)
             {
                 var controllerAttrubites = controller.GetCustomAttributes().Where(b => b.GetType() == typeof(PermissionAttribute));

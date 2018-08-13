@@ -21,14 +21,14 @@ namespace Simpleness.App.Models
         public const string Roles_Create = "创建角色";
         public const string Roles_Edit = "修改角色";
         public const string Roles_Delete = "删除角色";
-        public const string Roles_Memeber = "角色成员设定";
-        public const string Roles_Permission = "角色权限设定";
+        public const string Roles_Memeber = "设定成员";
+        public const string Roles_Permission = "设定权限";
 
 
         public const string Departments = "部门管理";
         public const string Departments_Create = "创建部门";
         public const string Departments_Edit = "编辑部门";
         public const string Departments_Delete = "删除部门";
-        public const string Deaprtments_Member = "部门成员设定";
+        public const string Deaprtments_Member = "成员设定";
     }
 }

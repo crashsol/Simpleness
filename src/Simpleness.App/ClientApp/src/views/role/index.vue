@@ -14,8 +14,8 @@
         <template slot-scope="scope">
           <el-button type="infor" @click="handleUpdate(scope.row)" size="mini">编辑</el-button>
           <el-button type="danger" @click="handleDelete(scope.row)" size="mini">删除</el-button>
-          <el-button type="primary" @click="handelMember(scope.row.id)" size="mini">成员</el-button>
-          <el-button type="success" @click="permission(scope.row.id)" size="mini">授权</el-button>
+          <el-button type="primary" @click="handleMember(scope.row)" size="mini">成员</el-button>
+          <el-button type="success" @click="handlePermission(scope.row)" size="mini">授权</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -37,7 +37,9 @@
     </el-dialog>
 
     <!-- 角色权限 -->
-    <el-dialog title="设置角色权限" :visible.sync="permissionStatus" width="60%">
+    <el-dialog title="设置角色权限" :visible.sync="permissionStatus" width="40%">
+      <el-tree :data="permissionModel.permissionData" show-checkbox  default-expand-all node-key="id" ref='permissionTree' >
+      </el-tree>
       <span slot="footer">
         <el-button @click="permissionStatus = false">取 消</el-button>
         <el-button type="primary" @click="permission">确 定</el-button>
@@ -45,13 +47,11 @@
     </el-dialog>
 
     <!-- 角色成员 -->
-    <el-dialog title="设置角色成员" :visible.sync="memberStatus" width="40%">
+    <el-dialog title="memberModel.title" :visible.sync="memberStatus" width="40%">
       <div style="text-align: center">
         <el-transfer style="text-align: left; display: inline-block" v-model="memberModel.userIds" :data="memberModel.items" filterable :titles="['未选择用户', '已选择用户']">
         </el-transfer>
-
       </div>
-
       <span slot="footer">
         <el-button @click="memberStatus = false">取 消</el-button>
         <el-button type="primary" @click="member">确 定</el-button>
@@ -66,7 +66,10 @@ import {
   roleCreate,
   roleUpdate,
   roleDelete,
-  getRoleUsers
+  getRoleUsers,
+  updateRoleUsers,
+  getRolePermissions,
+  updateRolePermissions
 } from '../../api/role.js'
 export default {
   data() {
@@ -99,11 +102,14 @@ export default {
       permissionStatus: false,
       permissionModel: {
         id: undefined,
+        title: '',
+        permissionData: [],
         permissions: []
       },
       memberStatus: false,
       memberModel: {
         id: undefined,
+        title: '',
         userIds: [],
         items: []
       }
@@ -199,19 +205,71 @@ export default {
       })
     },
     // 获取角色成员
-    async handelMember(id) {
-      const result = await getRoleUsers(id)
-      this.memberModel.id = id
+    async handleMember(row) {
+      const result = await getRoleUsers(row.id)
+      this.memberModel.id = row.id
+      this.memberModel.title = `设置 ${row.name} 角色成员`
       this.memberModel.userIds = result.selectItems
       this.memberModel.items = result.items
       this.memberStatus = true
     },
     // 更新角色成员
-    member() {},
+    member() {
+      this.$confirm(this.memberModel.title, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async() => {
+          await updateRoleUsers(this.memberModel.id, this.memberModel.userIds)
+          this.memberStatus = false
+          this.$message({
+            message: '设置成功',
+            type: 'success'
+          })
+        })
+        .catch(() => {
+          this.$message({
+            message: '取消设置',
+            type: 'warning'
+          })
+        })
+    },
     // 获取角色权限
-    handlePermission(id) {},
+    async handlePermission(row) {
+      this.permissionModel.id = row.id
+      this.permissionModel.title = `设置 ${row.name} 角色权限`
+      const result = await getRolePermissions(row.id)
+      this.permissionModel.permissionData = [result.tree]
+      this.permissionStatus = true
+      this.$nextTick(() => {
+        // 设置勾选当前所有权限
+        this.$refs['permissionTree'].setCheckedKeys(result.selectKeys)
+      })
+    },
     // 更新角色授权
-    permission() {}
+    permission() {
+      this.$confirm(this.permissionModel.title, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async() => {
+          const permissions = this.$refs['permissionTree'].getCheckedKeys()
+          await updateRolePermissions(this.permissionModel.id, permissions)
+          this.permissionStatus = false
+          this.$message({
+            message: '设置成功',
+            type: 'success'
+          })
+        })
+        .catch(() => {
+          this.$message({
+            message: '取消设置',
+            type: 'warning'
+          })
+        })
+    }
   },
   mounted() {
     this.getRoles()
