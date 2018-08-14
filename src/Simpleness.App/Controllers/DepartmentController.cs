@@ -34,6 +34,19 @@ namespace Simpleness.App.Controllers
             return Ok(await _departmentService.DepartmentListAsync());
         }
 
+
+        /// <summary>
+        /// 获取全部部门信息
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("tree")]
+        [ProducesResponseType(typeof(TreeItem<Guid>), 200)]
+        public async Task<IActionResult> DepartmentTreeAsync()
+        {
+        
+            return Ok(await _departmentService.GetDepartmentTreeAsync());
+        }
+
         /// <summary>
         /// 创建部门
         /// </summary>
@@ -70,7 +83,7 @@ namespace Simpleness.App.Controllers
         /// <returns></returns>
         [HttpPost("delete/{id}")]
         [ProducesResponseType(200)]
-        [Permission(nameof(PermissionSettings.Departments_Delete),PermissionSettings.Departments_Delete)]  
+        [Permission(nameof(PermissionSettings.Departments_Delete), PermissionSettings.Departments_Delete)]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
             await _departmentService.DeleteAsync(id);

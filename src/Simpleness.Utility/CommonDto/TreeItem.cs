@@ -45,7 +45,7 @@ namespace Simpleness.Utility.CommonDto
         /// <summary>
         /// 子节点
         /// </summary>
-        public List<TreeItem<T>> Children { get; set; }
+        public List<TreeItem<T>> Children { get; set; } = new List<TreeItem<T>>();
 
     }
 }

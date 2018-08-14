@@ -3,50 +3,24 @@
     <div style="margin:10px 0px">
       <el-button type="primary" @click="handleCreate">创建部门</el-button>
     </div>
-    <el-row :gutter="20">
-      <el-col :span="8">
-        <el-input placeholder="输入关键字进行过滤" v-model="filterText">
-        </el-input>
-        <div style="margin-top:10px;">
-          <el-tree :data="departmentTree" default-expand-all
-          :filter-node-method="filterNode"
-          ref="departmentTree"
-          :expand-on-click-node="false">
-            <span class="custom-tree-node" slot-scope="{ node, data }">
-              <span>{{ node.label }}</span>
-              <span>
-                <el-button type="text" size="mini" @click="() => handleCreate(data)">
-                  Append
-                </el-button>
-                <el-button type="text" size="mini" @click="() => handleDelete(node, data)">
-                  Delete
-                </el-button>
-              </span>
-            </span>
-          </el-tree>
-        </div>
 
-      </el-col>
-      <el-col :span="16">
-        <el-table :data="departments" border>
-          <el-table-column prop="name" label="部门名称">
-          </el-table-column>
-          <el-table-column prop="description" label="部门描述">
-          </el-table-column>
-          <el-table-column prop="fullPath" label="部门层级">
-          </el-table-column>
-          <el-table-column prop="order" label="部门排序">
-          </el-table-column>
-          <el-table-column label="操作" width="400px">
-            <template slot-scope="scope">
-              <el-button type="infor" @click="handleUpdate(scope.row)" size="mini">编辑</el-button>
-              <el-button type="danger" @click="handleDelete(scope.row)" size="mini">删除</el-button>
-              <el-button type="primary" @click="handleMember(scope.row)" size="mini">成员</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-col>
-    </el-row>
+    <el-table :data="departments" border>
+      <el-table-column prop="name" label="部门名称">
+      </el-table-column>
+      <el-table-column prop="description" label="部门描述">
+      </el-table-column>
+      <el-table-column prop="fullPath" label="部门层级">
+      </el-table-column>
+      <el-table-column prop="order" label="部门排序">
+      </el-table-column>
+      <el-table-column label="操作" width="400px">
+        <template slot-scope="scope">
+          <el-button type="infor" @click="handleUpdate(scope.row)" size="mini">编辑</el-button>
+          <el-button type="danger" @click="handleDelete(scope.row)" size="mini">删除</el-button>
+          <el-button type="primary" @click="handleMember(scope.row)" size="mini">成员</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
 
     <!-- 创建/更新部门 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="60%">
@@ -95,14 +69,11 @@ import {
   departDelete,
   departUpdate,
   updateDepartUsers,
-  getDepartUsers,
-  departTree
+  getDepartUsers
 } from '../../api/department.js'
 export default {
   data() {
     return {
-      departmentTree: [],
-      filterText: '',
       departments: [],
       form: {
         id: undefined,
@@ -140,21 +111,10 @@ export default {
       }
     }
   },
-  watch: {
-    filterText(val) {
-      this.$refs.departmentTree.filter(val)
-    }
-  },
   methods: {
     async getDepartments() {
-      const tree = await departTree()
-      const departments = await departList()
-      this.departments = departments
-      this.departmentTree.push(tree)
-    },
-    filterNode(value, data) {
-      if (!value) return true
-      return data.label.indexOf(value) !== -1
+      const data = await departList()
+      this.departments = data
     },
     // 清空表单
     resetForm() {
@@ -267,14 +227,5 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.custom-tree-node {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 14px;
-  padding-right: 8px;
-}
+<style>
 </style>
-

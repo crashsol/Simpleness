@@ -8,6 +8,14 @@ export function departList() {
   })
 }
 
+/* 获取全部部门信息 */
+export function departTree() {
+  return request({
+    url: 'api/department/tree',
+    method: 'get'
+  })
+}
+
 /* 获取创建部门 */
 export function departCreate(name, description, order, pid) {
   return request({

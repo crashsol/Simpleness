@@ -13,12 +13,17 @@ namespace Simpleness.Core.Department
     {
 
         /// <summary>
+        /// 获取全部部门结构,菜单树结构
+        /// </summary>
+        /// <returns></returns>
+        Task<TreeItem<Guid>> GetDepartmentTreeAsync();
+
+        /// <summary>
         /// 获取所有部门列表
         /// </summary>
         /// <returns></returns>
         Task<List<DepartmentRDto>> DepartmentListAsync();
-
-
+      
 
         /// <summary>
         /// 创建一个部门

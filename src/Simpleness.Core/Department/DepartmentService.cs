@@ -16,6 +16,7 @@ using Simpleness.DataEntityFramework.Entity;
 
 namespace Simpleness.Core.Department
 {
+
     public class DepartmentService : BaseService, IDepartmentService
     {
         public DepartmentService(SimplenessDbContext dbContext,
@@ -55,6 +56,10 @@ namespace Simpleness.Core.Department
             var entity =await _dbContent.Departments.FindAsync(id);
             if (entity == null)
                 throw new UserOperationException("部门不存在");
+            if(entity.Pid == default(Guid))
+            {
+                throw new UserOperationException("根节点不能删除");
+            }
             var allEntity = await _dbContent.Departments.
                                         Where(b => b.FullPath.StartsWith(entity.FullPath)).ToListAsync();
             _dbContent.RemoveRange(allEntity);
@@ -130,6 +135,34 @@ namespace Simpleness.Core.Department
             var news = dto.UserIds.Select(b => new UserDepartments { AppUserId = b, DepartmentId = dto.Id }).ToList();
             await _dbContent.UserDepartments.AddRangeAsync(news);
             await _dbContent.SaveChangesAsync();
+        }
+
+        public async Task<TreeItem<Guid>> GetDepartmentTreeAsync()
+        {
+            var allDepartments =await _dbContent.Departments.AsNoTracking().ToListAsync();
+            var temp = allDepartments.SingleOrDefault(b => b.Pid == default(Guid));
+            var root = new TreeItem<Guid>
+            {
+                Id = temp.Id,
+                Label = temp.Name,
+            };
+            CreateTree(allDepartments,root);
+            return root;
+        }
+
+        private void CreateTree(List<DepartmentEntity> departments, TreeItem<Guid> root)
+        {
+            var children = departments.Where(b => b.Pid == root.Id).OrderBy(b=>b.Order).ToList();
+            for (int i = 0; i < children.Count(); i++)
+            {
+                root.Children.Add(new TreeItem<Guid>
+                {
+                    Id = children[i].Id,
+                    Label = children[i].Name
+                });
+                CreateTree(departments, root.Children[i]);
+            }    
+          
         }
     }
 }

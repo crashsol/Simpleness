@@ -37,7 +37,7 @@
     </el-dialog>
 
     <!-- 角色权限 -->
-    <el-dialog title="设置角色权限" :visible.sync="permissionStatus" width="40%">
+    <el-dialog :title="permissionModel.title" :visible.sync="permissionStatus" width="40%">
       <el-tree :data="permissionModel.permissionData" show-checkbox  default-expand-all node-key="id" ref='permissionTree' >
       </el-tree>
       <span slot="footer">
@@ -47,7 +47,7 @@
     </el-dialog>
 
     <!-- 角色成员 -->
-    <el-dialog title="memberModel.title" :visible.sync="memberStatus" width="40%">
+    <el-dialog :title="memberModel.title" :visible.sync="memberStatus" width="40%">
       <div style="text-align: center">
         <el-transfer style="text-align: left; display: inline-block" v-model="memberModel.userIds" :data="memberModel.items" filterable :titles="['未选择用户', '已选择用户']">
         </el-transfer>
