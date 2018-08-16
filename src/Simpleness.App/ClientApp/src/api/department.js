@@ -8,7 +8,7 @@ export function departList() {
   })
 }
 
-/* 获取全部部门信息 */
+/* 获取部门树形结构 */
 export function departTree() {
   return request({
     url: 'api/department/tree',

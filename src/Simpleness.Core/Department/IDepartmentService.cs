@@ -16,7 +16,7 @@ namespace Simpleness.Core.Department
         /// 获取全部部门结构,菜单树结构
         /// </summary>
         /// <returns></returns>
-        Task<TreeItem<Guid>> GetDepartmentTreeAsync();
+        Task<DepartmentTreeItem> GetDepartmentTreeAsync();
 
         /// <summary>
         /// 获取所有部门列表

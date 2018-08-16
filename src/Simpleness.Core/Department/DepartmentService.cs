@@ -53,10 +53,10 @@ namespace Simpleness.Core.Department
 
         public async Task DeleteAsync(Guid id)
         {
-            var entity =await _dbContent.Departments.FindAsync(id);
+            var entity = await _dbContent.Departments.FindAsync(id);
             if (entity == null)
                 throw new UserOperationException("部门不存在");
-            if(entity.Pid == default(Guid))
+            if (entity.Pid == default(Guid))
             {
                 throw new UserOperationException("根节点不能删除");
             }
@@ -68,13 +68,13 @@ namespace Simpleness.Core.Department
 
         public async Task<List<DepartmentRDto>> DepartmentListAsync()
         {
-           return _mapper.Map<List<DepartmentRDto>>( await _dbContent.Departments.AsNoTracking().OrderBy(b => b.Order).OrderBy(b=>b.FullPath).ToListAsync());
+            return _mapper.Map<List<DepartmentRDto>>(await _dbContent.Departments.AsNoTracking().OrderBy(b => b.Order).OrderBy(b => b.FullPath).ToListAsync());
         }
 
         public async Task<DepartmentUDto> GetDepartmentByIdAsync(Guid id)
         {
-           var entity = await _dbContent.Departments.FindAsync(id);
-           if(entity == null )
+            var entity = await _dbContent.Departments.FindAsync(id);
+            if (entity == null)
             {
                 _logger.LogError($"部门 {id }不存在");
                 throw new UserOperationException("部门不存在");
@@ -83,13 +83,13 @@ namespace Simpleness.Core.Department
         }
 
         public async Task UpdateAsync(DepartmentUDto dto)
-        {
+        {          
             var parent = await _dbContent.Departments.FindAsync(dto.Pid);
-            if (parent == null)
+            if (parent == null && dto.Pid != default(Guid))
                 throw new UserOperationException("上级部门不存在");
             var entity = await _dbContent.Departments.FindAsync(dto.Id);
             if (entity == null)
-                throw new UserOperationException("数据不存在");            
+                throw new UserOperationException("数据不存在");
             var oldEntityFullPath = entity.FullPath; //A_B         
             entity.Pid = dto.Pid;
             entity.Name = dto.Name;
@@ -102,7 +102,7 @@ namespace Simpleness.Core.Department
                                         .Where(b => b.FullPath.StartsWith(oldEntityFullPath) && b.Id != entity.Id).ToListAsync();
             foreach (var item in children)
             {
-                item.FullPath = item.FullPath.Replace(oldEntityFullPath, entity.FullPath);               
+                item.FullPath = item.FullPath.Replace(oldEntityFullPath, entity.FullPath);
             }
             _dbContent.Departments.UpdateRange(entity);
             _dbContent.Departments.UpdateRange(children);
@@ -114,13 +114,13 @@ namespace Simpleness.Core.Department
             var allUsers = await _dbContent.Users.AsNoTracking().Select(b => new TransferItem<Guid>
             {
                 Key = b.Id,
-                Label =b.UserName,
+                Label = b.UserName,
             }).ToListAsync();
-            var selectUserIds =await _dbContent.UserDepartments.AsTracking().Where(b => b.DepartmentId == id).Select(b => b.AppUserId).ToListAsync();
+            var selectUserIds = await _dbContent.UserDepartments.AsTracking().Where(b => b.DepartmentId == id).Select(b => b.AppUserId).ToListAsync();
             return new TransferDto<Guid>
             {
                 Items = allUsers ?? new List<TransferItem<Guid>>(),
-                SelectItems = selectUserIds??new List<Guid>()
+                SelectItems = selectUserIds ?? new List<Guid>()
             };
         }
 
@@ -137,32 +137,37 @@ namespace Simpleness.Core.Department
             await _dbContent.SaveChangesAsync();
         }
 
-        public async Task<TreeItem<Guid>> GetDepartmentTreeAsync()
+        public async Task<DepartmentTreeItem> GetDepartmentTreeAsync()
         {
-            var allDepartments =await _dbContent.Departments.AsNoTracking().ToListAsync();
+            var allDepartments = await _dbContent.Departments.AsNoTracking().ToListAsync();
             var temp = allDepartments.SingleOrDefault(b => b.Pid == default(Guid));
-            var root = new TreeItem<Guid>
+            var root = new DepartmentTreeItem
             {
                 Id = temp.Id,
                 Label = temp.Name,
+                Description =temp.Description,
+                Order =temp.Order
             };
-            CreateTree(allDepartments,root);
+            CreateTree(allDepartments, root);
             return root;
         }
 
-        private void CreateTree(List<DepartmentEntity> departments, TreeItem<Guid> root)
+        private void CreateTree(List<DepartmentEntity> departments, DepartmentTreeItem root)
         {
-            var children = departments.Where(b => b.Pid == root.Id).OrderBy(b=>b.Order).ToList();
+            var children = departments.Where(b => b.Pid == root.Id).OrderBy(b => b.Order).ToList();
             for (int i = 0; i < children.Count(); i++)
             {
-                root.Children.Add(new TreeItem<Guid>
+                root.Children.Add(new DepartmentTreeItem
                 {
                     Id = children[i].Id,
-                    Label = children[i].Name
+                    Label = children[i].Name,
+                    Order =children[i].Order,
+                    Description =children[i].Description
+                    
                 });
                 CreateTree(departments, root.Children[i]);
-            }    
-          
+            }
+
         }
     }
 }

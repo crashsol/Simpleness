@@ -40,7 +40,7 @@ namespace Simpleness.App.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("tree")]
-        [ProducesResponseType(typeof(TreeItem<Guid>), 200)]
+        [ProducesResponseType(typeof(DepartmentTreeItem), 200)]
         public async Task<IActionResult> DepartmentTreeAsync()
         {
         

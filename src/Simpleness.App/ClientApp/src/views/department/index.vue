@@ -1,63 +1,41 @@
 <template>
   <div class="app-container">
-    <div style="margin:10px 0px">
-      <el-button type="primary" @click="handleCreate">创建部门</el-button>
-    </div>
-    <el-row :gutter="20">
-      <el-col :span="8">
-        <el-input placeholder="输入关键字进行过滤" v-model="filterText">
-        </el-input>
-        <div style="margin-top:10px;">
-          <el-tree :data="departmentTree" default-expand-all
-          :filter-node-method="filterNode"
-          ref="departmentTree"
-          :expand-on-click-node="false">
-            <span class="custom-tree-node" slot-scope="{ node, data }">
-              <span>{{ node.label }}</span>
-              <span>
-                <el-button type="text" size="mini" @click="() => handleCreate(data)">
-                  Append
-                </el-button>
-                <el-button type="text" size="mini" @click="() => handleDelete(node, data)">
-                  Delete
-                </el-button>
-              </span>
+    <el-row :gutter="30">
+      <el-col :span="10">
+        <el-input placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
+        <el-tree :data="departTree" default-expand-all node-key="id" style="padding-top:20px" :expand-on-click-node="false" :filter-node-method="filterNode" ref='departmentTree'>
+          <span class="custom-tree-node" slot-scope="{ node, data }">
+            <span>{{ node.label }}</span>
+            <span>
+              <el-button type="text" size="mini" @click="() => handleCreate(data)">
+                添加
+              </el-button>
+              <el-button type="text" size="mini" @click="() => handleUpdate(node, data)">
+                编辑
+              </el-button>
+              <el-button type="text" size="mini" @click="() => handleDelete(node, data)">
+                删除
+              </el-button>
+              <el-button type="text" size="mini" @click="() => handleMember(node, data)">
+                部门成员
+              </el-button>
             </span>
-          </el-tree>
-        </div>
+          </span>
+        </el-tree>
 
       </el-col>
-      <el-col :span="16">
-        <el-table :data="departments" border>
-          <el-table-column prop="name" label="部门名称">
-          </el-table-column>
-          <el-table-column prop="description" label="部门描述">
-          </el-table-column>
-          <el-table-column prop="fullPath" label="部门层级">
-          </el-table-column>
-          <el-table-column prop="order" label="部门排序">
-          </el-table-column>
-          <el-table-column label="操作" width="400px">
-            <template slot-scope="scope">
-              <el-button type="infor" @click="handleUpdate(scope.row)" size="mini">编辑</el-button>
-              <el-button type="danger" @click="handleDelete(scope.row)" size="mini">删除</el-button>
-              <el-button type="primary" @click="handleMember(scope.row)" size="mini">成员</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+      <el-col :span="14">
+        <el-card :body-style="{ padding: '10px' }">
+          <div slot="header">
+            <span>部门成员</span>
+          </div>
+          table
+        </el-card>
       </el-col>
     </el-row>
-
     <!-- 创建/更新部门 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="60%">
       <el-form :rules="formRules" ref="departmentForm" :model="form" label-width="80px">
-        <el-input v-model="form.id" type="hidden"></el-input>
-        <el-form-item label="上级部门" prop="pid">
-          <el-select v-model="form.pid" placeholder="请选择上级部门">
-            <el-option v-for="item in departments" :key="item.id" :label="item.fullPath" :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="部门名称" prop="name">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
@@ -76,11 +54,11 @@
     </el-dialog>
 
     <!-- 设置部门成员 -->
-    <el-dialog :title="memberModel.title" :visible.sync="memberStatus" width="40%">
+    <el-dialog :title="memberModel.title" :visible.sync="memberTransformVisible" width="40%">
       <el-transfer style="text-align: left; display: inline-block" v-model="memberModel.userIds" :data="memberModel.items" filterable :titles="['未选择用户', '已选择用户']">
       </el-transfer>
       <span slot="footer">
-        <el-button @click="memberStatus = false">取 消</el-button>
+        <el-button @click="memberTransformVisible = false">取 消</el-button>
         <el-button type="primary" @click="member">确 定</el-button>
       </span>
     </el-dialog>
@@ -90,7 +68,6 @@
 
 <script>
 import {
-  departList,
   departCreate,
   departDelete,
   departUpdate,
@@ -101,9 +78,9 @@ import {
 export default {
   data() {
     return {
-      departmentTree: [],
-      filterText: '',
+      departTree: [],
       departments: [],
+      filterText: '',
       form: {
         id: undefined,
         name: '',
@@ -131,13 +108,14 @@ export default {
         create: '创建部门',
         update: '更新部门'
       },
-      memberStatus: false,
+      memberTransformVisible: false,
       memberModel: {
         id: undefined,
         title: '',
         userIds: [],
         items: []
-      }
+      },
+      currentNode: Object
     }
   },
   watch: {
@@ -146,15 +124,13 @@ export default {
     }
   },
   methods: {
-    async getDepartments() {
-      const tree = await departTree()
-      const departments = await departList()
-      this.departments = departments
-      this.departmentTree.push(tree)
-    },
     filterNode(value, data) {
       if (!value) return true
       return data.label.indexOf(value) !== -1
+    },
+    async getDepartmentTree() {
+      const data = await departTree()
+      this.departTree.push(data)
     },
     // 清空表单
     resetForm() {
@@ -162,12 +138,19 @@ export default {
         id: null,
         name: '',
         description: '',
-        order: 99
+        order: 0
       }
     },
-    handleCreate() {
-      this.dialogStatus = true
+    handleCreate(data) {
       this.resetForm()
+      // 保存当前节点
+      this.currentNode = data
+      this.form.pid = data.id
+      if (data.children) {
+        this.form.order = data.order + data.children.length
+      } else {
+        this.form.order = data.order + 1
+      }
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -179,12 +162,15 @@ export default {
         if (valid) {
           const id = await departCreate(
             this.form.name,
-            this.form.name.description,
+            this.form.description,
             this.form.order,
             this.form.pid
           )
           this.form.id = id
-          await this.getDepartments()
+          if (!this.currentNode.children) {
+            this.$set(this.currentNode, 'children', [])
+          }
+          this.currentNode.children.push({ ...this.form, label: this.form.name, children: [] })
           this.dialogFormVisible = false
           this.$message({
             message: '创建成功',
@@ -193,8 +179,13 @@ export default {
         }
       })
     },
-    handleUpdate(row) {
-      this.form = { ...row } // row copy
+    handleUpdate(node, data) {
+      this.form.id = data.id
+      this.form.pid = data.pid
+      this.form.order = data.order
+      this.form.description = data.description
+      this.form.name = data.label
+      this.currentNode = data
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -205,7 +196,6 @@ export default {
       this.$refs['departmentForm'].validate(async valid => {
         const { id, name, description, order, pid } = this.form
         await departUpdate(id, name, description, order, pid)
-        await this.getDepartments()
         this.dialogFormVisible = false
         this.$message({
           message: '更新成功',
@@ -234,7 +224,7 @@ export default {
       this.memberModel.title = `设置 ${row.name} 部门成员`
       this.memberModel.userIds = result.selectItems
       this.memberModel.items = result.items
-      this.memberStatus = true
+      this.memberTransformVisible = true
     },
     member() {
       this.$confirm(this.memberModel.title, '提示', {
@@ -247,7 +237,7 @@ export default {
             this.memberModel.id,
             this.memberModel.userIds
           )
-          this.memberStatus = false
+          this.memberTransformVisible = false
           this.$message({
             message: '设置成功',
             type: 'success'
@@ -262,12 +252,12 @@ export default {
     }
   },
   mounted() {
-    this.getDepartments()
+    this.getDepartmentTree()
   }
 }
 </script>
 
-<style lang="scss" scoped>
+<style>
 .custom-tree-node {
   flex: 1;
   display: flex;
@@ -277,4 +267,3 @@ export default {
   padding-right: 8px;
 }
 </style>
-
