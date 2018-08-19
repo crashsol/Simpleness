@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -32,9 +34,9 @@ namespace Simpleness.App.Controllers
 
 
         public AccountController(
-            UserManager<AppUser> userManager, 
+            UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
-            ILogger<AccountController> logger, 
+            ILogger<AccountController> logger,
             IOptionsSnapshot<JwtSettings> options,
             SimplenessDbContext dbContext
             )
@@ -47,7 +49,7 @@ namespace Simpleness.App.Controllers
         }
 
         [ProducesResponseType(200)]
-        [ProducesResponseType(400)]      
+        [ProducesResponseType(400)]
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> LoginAsync(LoginViewModel model)
@@ -70,37 +72,13 @@ namespace Simpleness.App.Controllers
                                                     .AsNoTracking().Where(b => b.x.a.UserId == user.Id)
                                                     .Select(d => new Claim(d.c.ClaimType, d.c.ClaimValue)).ToListAsync();
                 var claims = roleClaims.Union(userclaims).Distinct().ToList();
-
-               
                 claims.Add(new Claim("sub", user.Id.ToString()));
                 claims.Add(new Claim("name", user.UserName));
                 claims.Add(new Claim("avatar", user.Avatar ?? ""));
-
-                //mock admin permission
-                if (user.UserName =="admin@qq.com")
-                {
-                    claims.Add(new Claim("permission", nameof(PermissionSettings.Users)));
-                    claims.Add(new Claim("permission", nameof(PermissionSettings.Users_Create)));
-                    claims.Add(new Claim("permission", nameof(PermissionSettings.Users_Delete)));
-                    claims.Add(new Claim("permission", nameof(PermissionSettings.Users_Locked)));
-                    claims.Add(new Claim("permission", nameof(PermissionSettings.Roles)));
-                    claims.Add(new Claim("permission", nameof(PermissionSettings.Roles_Create)));
-                    claims.Add(new Claim("permission", nameof(PermissionSettings.Roles_Delete)));
-                    claims.Add(new Claim("permission", nameof(PermissionSettings.Roles_Edit)));
-                    claims.Add(new Claim("permission", nameof(PermissionSettings.Roles_Memeber)));
-                    claims.Add(new Claim("permission", nameof(PermissionSettings.Roles_Permission)));
-                    claims.Add(new Claim("permission", nameof(PermissionSettings.Departments)));
-                    claims.Add(new Claim("permission", nameof(PermissionSettings.Departments_Create)));
-                    claims.Add(new Claim("permission", nameof(PermissionSettings.Departments_Delete)));
-                    claims.Add(new Claim("permission", nameof(PermissionSettings.Departments_Edit)));
-                }
-            
-
+                
                 //获得 加密后的key
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSetting.SecretKey));
-
                 var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);     //使用加密后的key 创建 登录证书
-
                 //生产加密token
                 var token = new JwtSecurityToken(
                     _jwtSetting.Issuer,
@@ -110,11 +88,19 @@ namespace Simpleness.App.Controllers
                     DateTime.Now.AddHours(4),
                     cred
                     );
-
                 //返回token
                 return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
 
-            }          
+            }
+            if (result.IsNotAllowed)
+            {
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var callbackUrl = Url.Link("ConfirmEmail", new { userId = user.Id, code = code });
+                _logger.LogInformation($"{callbackUrl}");
+                //await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",$"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                //await _signInManager.SignInAsync(user, isPersistent: false);
+                return BadRequest("邮箱未验证，请登录邮箱验证！");
+            }
             //账号被锁定
             if (result.IsLockedOut)
             {
@@ -122,6 +108,116 @@ namespace Simpleness.App.Controllers
                 return BadRequest("账号被锁定,无法登录,请联系管理员!");
             }
             return BadRequest("用户名密码不匹配");
-        }        
+        }
+
+
+        /// <summary>
+        /// 新用户注册
+        /// </summary>
+        /// <param name="Input"><see cref="RegisterModel"/>注册模型</param>
+        /// <returns></returns>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [HttpPost]
+        [Route("register")]
+        public async Task<IActionResult> RegisterAsync(RegisterModel Input)
+        {
+
+            var user = new AppUser { UserName = Input.Email, Email = Input.Email };
+            var result = await _userManager.CreateAsync(user, Input.Password);
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User created a new account with password.");
+
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var callbackUrl = Url.Link("ConfirmEmail", new { userId = user.Id, code = code });
+                _logger.LogInformation($"{HtmlEncoder.Default.Encode(callbackUrl)}");
+                //await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",$"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                //await _signInManager.SignInAsync(user, isPersistent: false);
+                return Ok("注册成功，请登录邮箱验证！");
+            }
+            return BadRequest(result.Errors.Select(b => b.Description).Aggregate((i, next) => $"{i},{next}"));
+        }
+
+
+        /// <summary>
+        /// 验证邮箱地址
+        /// </summary>
+        /// <param name="userId">用户ID</param>
+        /// <param name="code">验证CODE</param>
+        /// <returns></returns>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [HttpGet("ConfirmEmail", Name = "ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmailAsync(string userId, string code)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return BadRequest($"无法找到ID为 '{userId}'的用户.");
+            }
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+            if (!result.Succeeded)
+            {
+                return BadRequest($" '{userId}' 用户验证邮箱失败:");
+            }
+            return Ok("邮箱验证成功");
+        }
+
+
+        /// <summary>
+        /// 通过邮箱地址找回密码
+        /// </summary>
+        /// <param name="email">邮箱地址</param>
+        /// <returns></returns>      
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [HttpPost("forgotpwd/{email}")]
+        public async Task<IActionResult> ForgotPasswordAsync([EmailAddress(ErrorMessage = "必须输入邮箱地址")]string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+            {
+                return BadRequest("该邮箱未注册!");
+            }
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var callbackUrl = Url.Link("ResetPassword", new { code });
+            _logger.LogInformation($"{callbackUrl}");
+            //await _emailSender.SendEmailAsync(
+            //    Input.Email,
+            //    "Reset Password",
+            //    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+            return Ok("请重置密码邮件已发送至你的邮箱,请查收!");
+        }
+
+        /// <summary>
+        /// 通过邮件Code重置密码
+        /// </summary>
+        /// <param name="dto"><see cref="ResetPasswordWithCode"/>重置密码</param>
+        /// <returns></returns>
+
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [HttpPost("ResetPassword", Name = "ResetPassword")]
+        public async Task<IActionResult> ResetPasswordAsync(ResetPasswordWithCode dto)
+        {
+            var user = await _userManager.FindByEmailAsync(dto.Email);
+            if (user == null)
+            {
+                // Don't reveal that the user does not exist
+                return BadRequest("该邮箱未注册!");
+            }
+            var result = await _userManager.ResetPasswordAsync(user, dto.Code, dto.Password);
+            if (result.Succeeded)
+            {
+                return Ok("重置密码成功");
+            }
+            return BadRequest(result.Errors.Select(b => b.Description).Aggregate((i, next) => $"{i},{next}"));
+
+        }
+
+
+
+
     }
 }

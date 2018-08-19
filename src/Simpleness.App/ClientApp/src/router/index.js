@@ -22,90 +22,137 @@ import Layout from '../views/layout/Layout'
   }
 **/
 /* 系统权限，不要进进行权限验证的 */
-export const constantRouterMap = [
-  { path: '/login', component: () => import('@/views/login/index'), hidden: true },
-  { path: '/404', component: () => import('@/views/errorPages/404'), hidden: true },
-  {
-    path: '',
-    component: Layout,
-    redirect: '/dashboard',
-    hidden: true,
-    children: [{
-      path: 'dashboard',
-      component: () => import('@/views/dashboard/index'),
-      name: 'dashboard',
-      meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
-    }]
+export const constantRouterMap = [{
+  path: '/login',
+  component: () =>
+      import('@/views/login/index'),
+  hidden: true
+},
+{
+  name: 'register',
+  path: '/register',
+  component: () =>
+      import('@/views/login/register'),
+  hidden: true
+},
+{
+  name: 'resetpwd',
+  path: '/resetpwd',
+  component: () =>
+      import('@/views/login/resetpwd'),
+  hidden: true
+},
+{
+  path: '/404',
+  component: () =>
+      import('@/views/errorPages/404'),
+  hidden: true
+},
+
+{
+  path: '',
+  component: Layout,
+  redirect: '/dashboard',
+  hidden: true,
+  children: [{
+    path: 'dashboard',
+    component: () =>
+        import('@/views/dashboard/index'),
+    name: 'dashboard',
+    meta: {
+      title: 'dashboard',
+      icon: 'dashboard',
+      noCache: true
+    }
+  }]
+},
+{
+  path: '/account',
+  component: Layout,
+  hidden: true,
+  children: [{
+    path: 'userinfo',
+    name: 'userinfo',
+    component: () =>
+          import('@/views/login/userinfo'),
+    meta: {
+      title: 'userinfo',
+      icon: 'user'
+    }
   },
   {
-    path: '/account',
-    component: Layout,
-    hidden: true,
-    children: [{
-      path: 'userinfo',
-      name: 'userinfo',
-      component: () => import('@/views/login/userinfo'),
-      meta: { title: 'userinfo', icon: 'user' }
-    },
-    {
-      path: 'changepwd',
-      name: 'changepwd',
-      component: () => import('@/views/login/changepwd'),
-      meta: { title: 'changepwd', icon: 'user' }
-    }]
+    path: 'changepwd',
+    name: 'changepwd',
+    component: () =>
+          import('@/views/login/changepwd'),
+    meta: {
+      title: 'changepwd',
+      icon: 'user'
+    }
   }
+  ]
+}
 
 ]
 
 /* 定义需要验证权限的路由信息 */
-export const asyncRouterMap = [
-  {
-    path: '/admin',
-    component: Layout,
-    name: 'admin',
-    redirect: 'noredirect',
-    alwaysShow: true,
-    meta: { title: 'system', icon: 'example' },
-    children: [
-      {
-        path: 'user',
-        name: 'user',
-        component: () => import('@/views/user/index'),
-        meta: { title: 'users', icon: 'user', permission: 'Users' }
-      },
-      {
-        path: 'role',
-        name: 'role',
-        component: () => import('@/views/role/index'),
-        meta: { title: 'roles', icon: 'role', permission: 'Roles' }
-      },
-      {
-        path: 'departments',
-        name: 'departments',
-        component: () => import('@/views/department/index'),
-        meta: { title: 'departments', icon: 'department', permission: 'Departments' }
-      }
-    ]
+export const asyncRouterMap = [{
+  path: '/admin',
+  component: Layout,
+  name: 'admin',
+  redirect: 'noredirect',
+  alwaysShow: true,
+  meta: {
+    title: 'system',
+    icon: 'example'
+  },
+  children: [{
+    path: 'user',
+    name: 'user',
+    component: () =>
+          import('@/views/user/index'),
+    meta: {
+      title: 'users',
+      icon: 'user',
+      permission: 'Users'
+    }
   },
   {
-    path: '/form',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
+    path: 'role',
+    name: 'role',
+    component: () =>
+          import('@/views/role/index'),
+    meta: {
+      title: 'roles',
+      icon: 'role',
+      permission: 'Roles'
+    }
   },
-  /* 404 */
-  { path: '*', redirect: '/404', hidden: true }
+  {
+    path: 'departments',
+    name: 'departments',
+    component: () =>
+          import('@/views/department/index'),
+    meta: {
+      title: 'departments',
+      icon: 'department',
+      permission: 'Departments'
+    }
+  }
+  ]
+},
+
+{
+  path: '*',
+  redirect: '/404',
+  hidden: true
+}
 ]
 
 export default new Router({
   mode: 'history', // 后端支持可开
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({
+    y: 0
+  }),
   routes: constantRouterMap
 })
-

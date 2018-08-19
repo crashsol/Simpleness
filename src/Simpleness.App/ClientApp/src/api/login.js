@@ -10,10 +10,34 @@ export function login(username, password) {
     }
   })
 }
-/*
-export function logout() {
+/* 新用户注册 */
+export function register(email, password) {
   return request({
-    url: '/api/account/logout',
+    url: '/api/account/register',
+    method: 'post',
+    data: {
+      email,
+      password
+    }
+  })
+}
+/* 忘记密码，发送邮件 */
+export function forgotPwd(email) {
+  return request({
+    url: 'api/account/forgotpwd/' + email,
     method: 'post'
   })
-} */
+}
+
+export function resetPwd(email, password, code) {
+  return request({
+    url: 'api/account/ResetPassword',
+    method: 'post',
+    data: {
+      email,
+      password,
+      code
+    }
+  })
+}
+

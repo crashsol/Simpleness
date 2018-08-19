@@ -1,51 +1,72 @@
 <template>
   <div class="login-container">
-    <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
-      <h3 class="title">Crashsol管理系统</h3>
+    <el-form class="login-form" autoComplete="on" :model="registerForm" :rules="registerRules" ref="registerForm" label-position="left">
+      <h3 class="title">用户注册</h3>
       <el-form-item prop="username">
         <span class="svg-container svg-container_login">
           <svg-icon icon-class="user" />
         </span>
-        <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="username" />
+        <el-input name="username" type="text" v-model="registerForm.username" autoComplete="on" placeholder="请输入电子邮箱" />
       </el-form-item>
       <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password"></svg-icon>
         </span>
-        <el-input name="password" :type="pwdType" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on" placeholder="password"></el-input>
+        <el-input name="password" :type="pwdType" v-model="registerForm.password" autoComplete="on" placeholder="请输入密码"></el-input>
+        <span class="show-pwd" @click="showPwd">
+          <svg-icon icon-class="eye" />
+        </span>
+      </el-form-item>
+
+      <el-form-item prop="passwordConfirme">
+        <span class="svg-container">
+          <svg-icon icon-class="password"></svg-icon>
+        </span>
+        <el-input name="passwordConfirme" :type="pwdType" v-model="registerForm.passwordConfirme" autoComplete="on" placeholder="请再次输入密码"></el-input>
         <span class="show-pwd" @click="showPwd">
           <svg-icon icon-class="eye" />
         </span>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" style="width:100%" :loading="loading" @click.native.prevent="handleLogin">
-          登录
+          注册账号
         </el-button>
       </el-form-item>
-      <div class="tips">
-        <el-button type="text" @click.native.prevent="handleRegister" style="margin-right:20px;">注册</el-button>
-        <el-button type="text" @click.native.prevent="handleResetPassword" style="margin-right:20px;">忘记密码</el-button>
-      </div>
+
     </el-form>
   </div>
-
 </template>
-
 <script>
-import { forgotPwd } from '../../api/login.js'
+import { register } from '../../api/login.js'
 export default {
   name: 'login',
   data() {
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.registerForm.password) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
     return {
-      loginForm: {
-        username: 'admin@qq.com',
-        password: '123qwe!@#'
+      registerForm: {
+        username: '',
+        password: '',
+        passwordConfirme: ''
       },
-      loginRules: {
+      registerRules: {
         username: [
-          { required: true, trigger: 'blur', message: '请输入用户名' }
+          {
+            required: true,
+            trigger: 'blur',
+            message: '请输入电子邮箱',
+            type: 'email'
+          }
         ],
-        password: [{ required: true, trigger: 'blur', message: '请输入密码' }]
+        password: [{ required: true, trigger: 'blur', message: '请输入密码' }],
+        passwordConfirme: [{ validator: validatePass2, trigger: 'blur' }]
       },
       loading: false,
       pwdType: 'password'
@@ -60,36 +81,21 @@ export default {
       }
     },
     handleLogin() {
-      this.$refs.loginForm.validate(async valid => {
+      this.$refs.registerForm.validate(async valid => {
         if (valid) {
-          try {
-            this.loading = true
-            await this.$store.dispatch('Login', this.loginForm)
-            this.loading = false
-            this.$router.push({ path: '/' })
-          } catch (error) {
-            this.loading = false
-          }
-        } else {
-          return false
+          const result = await register(
+            this.registerForm.username,
+            this.registerForm.password
+          )
+          this.$message({
+            message: result + '即将调转到登录页面',
+            type: 'success',
+            duration: '1000',
+            onClose: () => {
+              this.$router.push('/login')
+            }
+          })
         }
-      })
-    },
-    handleRegister() {
-      this.$router.push({ path: 'register' })
-    },
-    handleResetPassword() {
-      this.$prompt('请输入邮箱,以便发送重置密码邮件', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-        inputErrorMessage: '邮箱格式不正确'
-      }).then(async({ value }) => {
-        const result = await forgotPwd(value)
-        this.$message({
-          type: 'success',
-          message: result
-        })
       })
     }
   }

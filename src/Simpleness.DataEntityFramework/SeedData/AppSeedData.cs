@@ -6,6 +6,7 @@ using Simpleness.DataEntityFramework.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 
 namespace Simpleness.DataEntityFramework.SeedData
@@ -26,15 +27,16 @@ namespace Simpleness.DataEntityFramework.SeedData
             //更新数据库
             await _dbcontext.Database.MigrateAsync();
 
+            //创建系统管理和系统管理用户
             if (!_dbcontext.Users.Any())
             {
-                var admin = new AppUser
+                var user = new AppUser
                 {
                     UserName = "admin@qq.com",
                     Email = "admin@qq.com"
                 };
 
-                var result = await _userManager.CreateAsync(admin, "123qwe!@#");
+                var result = await _userManager.CreateAsync(user, "123qwe!@#");
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("初始化数据，创建超级管理员成功");
@@ -43,26 +45,39 @@ namespace Simpleness.DataEntityFramework.SeedData
                 {
                     _logger.LogError($"初始化 系统人员 出错:{string.Join(',', result.Errors)}");
                 }
-            }
-            //创建系统角色
-            if (!_dbcontext.Roles.Any())
-            {
+
                 var role = new AppRole("超级管理员")
-                {                    
+                {
                     Description = "具有系统所有权限"
                 };
-
-                var result = await _roleManager.CreateAsync(role);
+                //添加系统角色
+                result = await _roleManager.CreateAsync(role);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("初始化数据，创建超级管理员成功");
+                    //添加角色权限
+                    var claims = new List<Claim>();
+                    claims.Add(new Claim("permission", "Users"));
+                    claims.Add(new Claim("permission", "Users_Create"));
+                    claims.Add(new Claim("permission", "Users_Delete"));
+                    claims.Add(new Claim("permission", "Users_Locked"));
+                    claims.Add(new Claim("permission", "Roles"));
+                    claims.Add(new Claim("permission", "Roles_Create"));
+                    claims.Add(new Claim("permission", "Roles_Delete"));
+                    claims.Add(new Claim("permission", "Roles_Edit"));
+                    claims.Add(new Claim("permission", "Roles_Memeber"));
+                    claims.Add(new Claim("permission", "Roles_Permission"));
+                    _dbcontext.RoleClaims.AddRange(claims.Select(b => new IdentityRoleClaim<Guid> { RoleId = role.Id, ClaimType = b.Type, ClaimValue = b.Value }));
+                    _dbcontext.SaveChanges();
                 }
                 else
                 {
                     _logger.LogError($"初始化系统角色出错:{string.Join(',', result.Errors)}");
                 }
-            }
+                _dbcontext.UserRoles.Add(new IdentityUserRole<Guid> { UserId = user.Id, RoleId = role.Id });
+                _dbcontext.SaveChanges();
 
+            }         
             if(!_dbcontext.Departments.Any())
             {
                 _dbcontext.Departments.Add(new Department {

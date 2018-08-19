@@ -34,7 +34,6 @@ service.interceptors.response.use(
   },
   error => {
     if (error.response) {
-      console.log(error.response)
       var res = error.response
       // 400 404 ,500错误
       if (res.status === 400) {

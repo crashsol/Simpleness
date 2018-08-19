@@ -54,6 +54,7 @@ namespace Simpleness.App
 
             services.Configure<IdentityOptions>(option =>
             {
+                option.SignIn.RequireConfirmedEmail = true;
                 option.Password.RequireUppercase = false;
             });
 
@@ -123,7 +124,7 @@ namespace Simpleness.App
             #region AutoMapper
             services.AddAutoMapper();
             #endregion
-           
+
             //应用层服务注入
             services.AddServiceLayer();
 
@@ -137,6 +138,8 @@ namespace Simpleness.App
             });
 
 
+
+
             services.AddMvc(option =>
             {
                 //禁止合并AuthorizeFilter
@@ -144,7 +147,7 @@ namespace Simpleness.App
                 //Exception Filter
                 option.Filters.Add(typeof(GlobalExceptionFilter));
                 //使用ApiController标记了控制器，会默认验证模型，如果验证不通过会BadRequest(ModelState);
-                option.Filters.Add(typeof(ValidateModelFilter));
+                //option.Filters.Add(typeof(ValidateModelFilter));
 
             }).AddJsonOptions(option =>
             {
@@ -158,12 +161,15 @@ namespace Simpleness.App
             //关闭默认的ApiBehavior
             services.Configure<ApiBehaviorOptions>(option =>
             {
-                //关闭默认的模型验证过滤，使用自定ValidateModelFilter
-                option.SuppressModelStateInvalidFilter = true;
-
+                //使用自己的模型验证返回数据          
+                option.InvalidModelStateResponseFactory = (action =>
+                {
+                    return new BadRequestObjectResult(action.ModelState.Values.SelectMany(v => v.Errors).Select(g => g.ErrorMessage).Aggregate((i, next) => $"{i},{next}"));
+               });
             });
 
-         
+
+
 
         }
 
