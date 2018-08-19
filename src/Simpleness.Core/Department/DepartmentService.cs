@@ -95,8 +95,14 @@ namespace Simpleness.Core.Department
             entity.Name = dto.Name;
             entity.Order = dto.Order;
             entity.Description = dto.Description;
-            entity.FullPath = parent.FullPath + "/" + dto.Name;
-
+            if(parent ==null)
+            {
+                entity.FullPath = entity.Name;
+            }
+            else
+            {
+                entity.FullPath = parent.FullPath + "/" + dto.Name;
+            }
             //检查当前节点的子节点
             var children = await _dbContent.Departments
                                         .Where(b => b.FullPath.StartsWith(oldEntityFullPath) && b.Id != entity.Id).ToListAsync();
@@ -152,7 +158,7 @@ namespace Simpleness.Core.Department
             return root;
         }
 
-        private void CreateTree(List<DepartmentEntity> departments, DepartmentTreeItem root)
+        private void CreateTree(List<DepartmentEntity> departments,  DepartmentTreeItem root)
         {
             var children = departments.Where(b => b.Pid == root.Id).OrderBy(b => b.Order).ToList();
             for (int i = 0; i < children.Count(); i++)

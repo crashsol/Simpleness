@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row :gutter="30">
-      <el-col :span="10">
+      <el-col :span="14">
         <el-input placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
         <el-tree :data="departTree" default-expand-all node-key="id" style="padding-top:20px" :expand-on-click-node="false" :filter-node-method="filterNode" ref='departmentTree'>
           <span class="custom-tree-node" slot-scope="{ node, data }">
@@ -16,7 +16,7 @@
               <el-button type="text" size="mini" @click="() => handleDelete(node, data)">
                 删除
               </el-button>
-              <el-button type="text" size="mini" @click="() => handleMember(node, data)">
+              <el-button type="text" size="mini" @click="() => handleMember(data)">
                 部门成员
               </el-button>
             </span>
@@ -24,12 +24,14 @@
         </el-tree>
 
       </el-col>
-      <el-col :span="14">
-        <el-card :body-style="{ padding: '10px' }">
+      <el-col :span="10">
+        <el-card :body-style="{ padding: '10px' , }">
           <div slot="header">
-            <span>部门成员</span>
+            <span>{{memberModel.title}}部门成员</span>
+            <el-button type="text" style="float: right; padding: 3px 0" @click="member" >更新设置</el-button>
           </div>
-          table
+          <el-transfer v-model="memberModel.userIds" :data="memberModel.items" filterable :titles="['未选择用户', '已选择用户']">
+          </el-transfer>
         </el-card>
       </el-col>
     </el-row>
@@ -52,17 +54,6 @@
         <el-button v-else type="primary" @click="update">{{$t('table.confirm')}}</el-button>
       </span>
     </el-dialog>
-
-    <!-- 设置部门成员 -->
-    <el-dialog :title="memberModel.title" :visible.sync="memberTransformVisible" width="40%">
-      <el-transfer style="text-align: left; display: inline-block" v-model="memberModel.userIds" :data="memberModel.items" filterable :titles="['未选择用户', '已选择用户']">
-      </el-transfer>
-      <span slot="footer">
-        <el-button @click="memberTransformVisible = false">取 消</el-button>
-        <el-button type="primary" @click="member">确 定</el-button>
-      </span>
-    </el-dialog>
-
   </div>
 </template>
 
@@ -108,7 +99,6 @@ export default {
         create: '创建部门',
         update: '更新部门'
       },
-      memberTransformVisible: false,
       memberModel: {
         id: undefined,
         title: '',
@@ -130,6 +120,7 @@ export default {
     },
     async getDepartmentTree() {
       const data = await departTree()
+      this.departTree = []
       this.departTree.push(data)
     },
     // 清空表单
@@ -170,7 +161,11 @@ export default {
           if (!this.currentNode.children) {
             this.$set(this.currentNode, 'children', [])
           }
-          this.currentNode.children.push({ ...this.form, label: this.form.name, children: [] })
+          this.currentNode.children.push({
+            ...this.form,
+            label: this.form.name,
+            children: []
+          })
           this.dialogFormVisible = false
           this.$message({
             message: '创建成功',
@@ -196,6 +191,7 @@ export default {
       this.$refs['departmentForm'].validate(async valid => {
         const { id, name, description, order, pid } = this.form
         await departUpdate(id, name, description, order, pid)
+        await this.getDepartmentTree()
         this.dialogFormVisible = false
         this.$message({
           message: '更新成功',
@@ -203,28 +199,27 @@ export default {
         })
       })
     },
-    handleDelete(row) {
-      var tempMsg = '确定删除 ' + row.name + ' 部门'
+    handleDelete(node, data) {
+      var tempMsg = '确定删除 ' + data.label + ' 部门'
       this.$confirm(tempMsg, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async() => {
-        await departDelete(row.id)
-        await this.getDepartments()
+        await departDelete(data.id)
+        await this.getDepartmentTree()
         this.$message({
           message: '删除成功',
           type: 'success'
         })
       })
     },
-    async handleMember(row) {
-      const result = await getDepartUsers(row.id)
-      this.memberModel.id = row.id
-      this.memberModel.title = `设置 ${row.name} 部门成员`
+    async handleMember(data) {
+      const result = await getDepartUsers(data.id)
+      this.memberModel.id = data.id
+      this.memberModel.title = `设置 ${data.label} `
       this.memberModel.userIds = result.selectItems
       this.memberModel.items = result.items
-      this.memberTransformVisible = true
     },
     member() {
       this.$confirm(this.memberModel.title, '提示', {
@@ -237,7 +232,6 @@ export default {
             this.memberModel.id,
             this.memberModel.userIds
           )
-          this.memberTransformVisible = false
           this.$message({
             message: '设置成功',
             type: 'success'

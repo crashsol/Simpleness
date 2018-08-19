@@ -33,12 +33,12 @@ namespace Simpleness.DataEntityFramework.Entity
         /// <summary>
         /// 部门全路径 根_人力资源部_XXXX
         /// </summary>
-        public string FullPath { get; set; } 
+        public string FullPath { get; set; }
 
         /// <summary>
         /// 部门成员（多对多关系映射)
         /// </summary>
-        public List<UserDepartments> UserDepartments { get; set; }
+        public List<UserDepartments> UserDepartments { get; set; } = new List<UserDepartments>();
 
     }
 

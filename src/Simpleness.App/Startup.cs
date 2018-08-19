@@ -144,7 +144,7 @@ namespace Simpleness.App
                 //Exception Filter
                 option.Filters.Add(typeof(GlobalExceptionFilter));
                 //使用ApiController标记了控制器，会默认验证模型，如果验证不通过会BadRequest(ModelState);
-                //option.Filters.Add(typeof(ValidateModelFilter));
+                option.Filters.Add(typeof(ValidateModelFilter));
 
             }).AddJsonOptions(option =>
             {
@@ -154,6 +154,14 @@ namespace Simpleness.App
                 option.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             })
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            //关闭默认的ApiBehavior
+            services.Configure<ApiBehaviorOptions>(option =>
+            {
+                //关闭默认的模型验证过滤，使用自定ValidateModelFilter
+                option.SuppressModelStateInvalidFilter = true;
+
+            });
 
          
 
