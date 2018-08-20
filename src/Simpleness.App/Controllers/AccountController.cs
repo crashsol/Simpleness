@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using NETCore.MailKit.Core;
 using Simpleness.App.Models;
 using Simpleness.DataEntityFramework;
 using Simpleness.DataEntityFramework.Entity;
@@ -32,13 +33,15 @@ namespace Simpleness.App.Controllers
         private readonly JwtSettings _jwtSetting;
         private readonly ILogger _logger;
 
+        private readonly IEmailService _emailService; 
 
         public AccountController(
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
             ILogger<AccountController> logger,
             IOptionsSnapshot<JwtSettings> options,
-            SimplenessDbContext dbContext
+            SimplenessDbContext dbContext,
+            IEmailService emailService
             )
         {
             _signInManager = signInManager;
@@ -46,6 +49,7 @@ namespace Simpleness.App.Controllers
             _dbContext = dbContext;
             _logger = logger;
             _jwtSetting = options.Value ?? throw new ArgumentNullException("JWT配置参数错误");
+            _emailService = emailService;
         }
 
         [ProducesResponseType(200)]
@@ -95,10 +99,8 @@ namespace Simpleness.App.Controllers
             if (result.IsNotAllowed)
             {
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var callbackUrl = Url.Link("ConfirmEmail", new { userId = user.Id, code = code });
-                _logger.LogInformation($"{callbackUrl}");
-                //await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",$"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-                //await _signInManager.SignInAsync(user, isPersistent: false);
+                var callbackUrl = Url.Link("ConfirmEmail", new { userId = user.Id, code = code });             
+                await _emailService.SendAsync(user.Email, "邮箱验证", $"请点击链接,已验证你的邮箱<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>验证邮箱</a>.", true);               
                 return BadRequest("邮箱未验证，请登录邮箱验证！");
             }
             //账号被锁定
@@ -131,9 +133,7 @@ namespace Simpleness.App.Controllers
 
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var callbackUrl = Url.Link("ConfirmEmail", new { userId = user.Id, code = code });
-                _logger.LogInformation($"{HtmlEncoder.Default.Encode(callbackUrl)}");
-                //await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",$"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-                //await _signInManager.SignInAsync(user, isPersistent: false);
+                await _emailService.SendAsync(user.Email, "邮箱验证", $"请点击链接,已验证你的邮箱<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>验证邮箱</a>.", true);  
                 return Ok("注册成功，请登录邮箱验证！");
             }
             return BadRequest(result.Errors.Select(b => b.Description).Aggregate((i, next) => $"{i},{next}"));
@@ -161,7 +161,7 @@ namespace Simpleness.App.Controllers
             {
                 return BadRequest($" '{userId}' 用户验证邮箱失败:");
             }
-            return Ok("邮箱验证成功");
+            return Redirect("/");
         }
 
 
@@ -183,10 +183,8 @@ namespace Simpleness.App.Controllers
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
             var callbackUrl = Url.Link("ResetPassword", new { code });
             _logger.LogInformation($"{callbackUrl}");
-            //await _emailSender.SendEmailAsync(
-            //    Input.Email,
-            //    "Reset Password",
-            //    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+            await _emailService.SendAsync(user.Email, "邮箱验证", $"请点击链接,重置你的密码<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>重置密码</a>.", true);          
             return Ok("请重置密码邮件已发送至你的邮箱,请查收!");
         }
 

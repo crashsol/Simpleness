@@ -27,6 +27,8 @@ using Simpleness.App.Controllers;
 using Simpleness.Infrastructure.AspNetCore.Authorize;
 using Microsoft.AspNetCore.Authorization;
 using Simpleness.Core;
+using NETCore.MailKit.Extensions;
+using NETCore.MailKit.Infrastructure.Internal;
 
 namespace Simpleness.App
 {
@@ -137,7 +139,13 @@ namespace Simpleness.App
                 configuration.RootPath = "ClientApp/dist";
             });
 
-
+            var mailOption = new MailKitOptions();
+            Configuration.GetSection("MailKitOptions").Bind(mailOption);
+            //Add MailKit
+            services.AddMailKit(optionbuilder =>
+            {
+                optionbuilder.UseMailKit(mailOption);
+            });
 
 
             services.AddMvc(option =>
