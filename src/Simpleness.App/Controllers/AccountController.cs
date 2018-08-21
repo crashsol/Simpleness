@@ -101,9 +101,10 @@ namespace Simpleness.App.Controllers
             }
             if (result.IsNotAllowed)
             {
-                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var callbackUrl = $"{_configuration["SiteUri"]}/api/account/ConfirmEmail?userId={user.Id}&code={code}";
-                await _emailService.SendAsync(user.Email, "邮箱验证", $"请点击链接,已验证你的邮箱<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>验证邮箱</a>.", true);               
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);               
+                var callbackUrl = Url.Link("ConfirmEmail", new { userId = user.Id, code = code });              
+                _logger.LogInformation($"{callbackUrl}");
+                await _emailService.SendAsync(user.Email, "邮箱验证", $"请点击链接,已验证你的邮箱<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>验证邮箱</a>.",true);               
                 return BadRequest("邮箱未验证，请登录邮箱验证！");
             }
             //账号被锁定
@@ -131,11 +132,10 @@ namespace Simpleness.App.Controllers
             if (result.Succeeded)
             {
                 _logger.LogInformation("User created a new account with password.");
-
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                //var callbackUrl = Url.Link("ConfirmEmail", new { userId = user.Id, code = code });        
-                var callbackUrl = $"{_configuration["SiteUri"]}/api/account/ConfirmEmail?userId={user.Id}&code={code}";
-                await _emailService.SendAsync(user.Email, "邮箱验证", $"请点击链接,已验证你的邮箱<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>验证邮箱</a>.", true);  
+                var callbackUrl = Url.Link("ConfirmEmail", new { userId = user.Id, code = code });   
+                _logger.LogInformation($"{callbackUrl}");
+                await _emailService.SendAsync(user.Email, "新用户注册,邮箱验证", $"请点击链接,已验证你的邮箱<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>验证邮箱</a>.", true);  
                 return Ok("注册成功，请登录邮箱验证！");
             }
             return BadRequest(result.Errors.Select(b => b.Description).Aggregate((i, next) => $"{i},{next}"));
@@ -150,7 +150,7 @@ namespace Simpleness.App.Controllers
         /// <returns></returns>
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        [HttpGet("ConfirmEmail")]        
+        [HttpGet("ConfirmEmail",Name = "ConfirmEmail")]        
         public async Task<IActionResult> ConfirmEmailAsync(string userId, string code)
         {
             var user = await _userManager.FindByIdAsync(userId);
