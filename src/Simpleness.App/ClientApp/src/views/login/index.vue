@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { forgotPwd, comfirmedEmail } from '../../api/login.js'
+import { forgotPwd } from '../../api/login.js'
 export default {
   name: 'login',
   data() {
@@ -93,14 +93,22 @@ export default {
       })
     }
   },
-  async  mounted() {
-    if (this.$route.query['id'] && this.$route.query['code']) {
-      const result = await comfirmedEmail(this.$route.query['id'], this.$route.query['code'])
-      this.$message({
-        message: result,
-        type: 'success'
-      })
-      this.$router.push('/')
+  mounted() {
+    if (this.$route.query['status']) {
+      const result = this.$route.query['status']
+      if (result) {
+        this.$message({
+          message: '验证邮箱成功',
+          type: 'success'
+        })
+        this.$router.push('/')
+      } else {
+        this.$message({
+          message: '验证邮箱失败',
+          type: 'error'
+        })
+        this.$router.push('/')
+      }
     }
   }
 }
