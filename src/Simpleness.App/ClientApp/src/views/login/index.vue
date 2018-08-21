@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { forgotPwd } from '../../api/login.js'
+import { forgotPwd, comfirmedEmail } from '../../api/login.js'
 export default {
   name: 'login',
   data() {
@@ -91,6 +91,16 @@ export default {
           message: result
         })
       })
+    }
+  },
+  async  mounted() {
+    if (this.$route.query['id'] && this.$route.query['code']) {
+      const result = await comfirmedEmail(this.$route.query['id'], this.$route.query['code'])
+      this.$message({
+        message: result,
+        type: 'success'
+      })
+      this.$router.push('/')
     }
   }
 }

@@ -28,7 +28,7 @@ export function forgotPwd(email) {
     method: 'post'
   })
 }
-
+/* 使用code 重新设置密码 */
 export function resetPwd(email, password, code) {
   return request({
     url: 'api/account/ResetPassword',
@@ -41,3 +41,10 @@ export function resetPwd(email, password, code) {
   })
 }
 
+/* 验证邮箱地址 */
+export function comfirmedEmail(id, code) {
+  return request({
+    url: `api/account/ConfirmEmail?userId= ${id}&code=${code}`,
+    method: 'post'
+  })
+}

@@ -141,6 +141,9 @@ namespace Simpleness.App
 
             var mailOption = new MailKitOptions();
             Configuration.GetSection("MailKitOptions").Bind(mailOption);
+
+            //load from secrtes.json
+            mailOption.Password = Configuration["Password"];
             //Add MailKit
             services.AddMailKit(optionbuilder =>
             {

@@ -32,7 +32,7 @@ namespace UnitTest
                 client.AuthenticationMechanisms.Remove("XOAUTH2");
                 // Note: since we don't have an OAuth2 token, disable 	
                 // the XOAUTH2 authentication mechanism.     
-                client.Authenticate("47147551@qq.com", "xekhvbbrbpegcbeb");
+                client.Authenticate("47147551@qq.com", "");
                 client.Send(message);
                 client.Disconnect(true);
             }

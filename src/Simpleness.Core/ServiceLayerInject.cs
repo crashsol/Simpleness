@@ -17,9 +17,9 @@ namespace Simpleness.Core
         /// <returns></returns>
         public static IServiceCollection AddServiceLayer(this IServiceCollection services)
         {
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IRoleService, RoleService>();
-            services.AddTransient<IDepartmentService, DepartmentService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IDepartmentService, DepartmentService>();
             return services;
         }
     }

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -32,6 +33,7 @@ namespace Simpleness.App.Controllers
         private readonly SimplenessDbContext _dbContext;
         private readonly JwtSettings _jwtSetting;
         private readonly ILogger _logger;
+        private readonly IConfiguration _configuration; 
 
         private readonly IEmailService _emailService; 
 
@@ -41,7 +43,8 @@ namespace Simpleness.App.Controllers
             ILogger<AccountController> logger,
             IOptionsSnapshot<JwtSettings> options,
             SimplenessDbContext dbContext,
-            IEmailService emailService
+            IEmailService emailService,
+            IConfiguration configuration
             )
         {
             _signInManager = signInManager;
@@ -50,12 +53,12 @@ namespace Simpleness.App.Controllers
             _logger = logger;
             _jwtSetting = options.Value ?? throw new ArgumentNullException("JWT配置参数错误");
             _emailService = emailService;
+            _configuration = configuration;
         }
 
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        [HttpPost]
-        [Route("login")]
+        [HttpPost("login")]    
         public async Task<IActionResult> LoginAsync(LoginViewModel model)
         {
 
@@ -99,7 +102,7 @@ namespace Simpleness.App.Controllers
             if (result.IsNotAllowed)
             {
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var callbackUrl = Url.Link("ConfirmEmail", new { userId = user.Id, code = code });             
+                var callbackUrl = $"{_configuration["SiteUri"]}/login?id={user.Id}&code={code}";                     
                 await _emailService.SendAsync(user.Email, "邮箱验证", $"请点击链接,已验证你的邮箱<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>验证邮箱</a>.", true);               
                 return BadRequest("邮箱未验证，请登录邮箱验证！");
             }
@@ -120,11 +123,9 @@ namespace Simpleness.App.Controllers
         /// <returns></returns>
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        [HttpPost]
-        [Route("register")]
+        [HttpPost("register")]   
         public async Task<IActionResult> RegisterAsync(RegisterModel Input)
         {
-
             var user = new AppUser { UserName = Input.Email, Email = Input.Email };
             var result = await _userManager.CreateAsync(user, Input.Password);
             if (result.Succeeded)
@@ -132,7 +133,8 @@ namespace Simpleness.App.Controllers
                 _logger.LogInformation("User created a new account with password.");
 
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var callbackUrl = Url.Link("ConfirmEmail", new { userId = user.Id, code = code });
+                //var callbackUrl = Url.Link("ConfirmEmail", new { userId = user.Id, code = code });
+                var callbackUrl = $"{_configuration["SiteUri"]}/login?id={user.Id}&code={code}";
                 await _emailService.SendAsync(user.Email, "邮箱验证", $"请点击链接,已验证你的邮箱<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>验证邮箱</a>.", true);  
                 return Ok("注册成功，请登录邮箱验证！");
             }
@@ -148,7 +150,7 @@ namespace Simpleness.App.Controllers
         /// <returns></returns>
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        [HttpGet("ConfirmEmail", Name = "ConfirmEmail")]
+        [HttpPost("ConfirmEmail")]        
         public async Task<IActionResult> ConfirmEmailAsync(string userId, string code)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -161,7 +163,7 @@ namespace Simpleness.App.Controllers
             {
                 return BadRequest($" '{userId}' 用户验证邮箱失败:");
             }
-            return Redirect("/");
+            return Ok("成功验证邮箱");
         }
 
 
@@ -172,7 +174,7 @@ namespace Simpleness.App.Controllers
         /// <returns></returns>      
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        [HttpPost("forgotpwd/{email}")]
+        [HttpPost("forgotpwd/{email}")]      
         public async Task<IActionResult> ForgotPasswordAsync([EmailAddress(ErrorMessage = "必须输入邮箱地址")]string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -181,7 +183,8 @@ namespace Simpleness.App.Controllers
                 return BadRequest("该邮箱未注册!");
             }
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var callbackUrl = Url.Link("ResetPassword", new { code });
+
+            var callbackUrl = $"{_configuration["SiteUri"]}/ResetPassword?code={code}";         
             _logger.LogInformation($"{callbackUrl}");
 
             await _emailService.SendAsync(user.Email, "邮箱验证", $"请点击链接,重置你的密码<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>重置密码</a>.", true);          
@@ -196,7 +199,7 @@ namespace Simpleness.App.Controllers
 
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        [HttpPost("ResetPassword", Name = "ResetPassword")]
+        [HttpPost("ResetPassword")]      
         public async Task<IActionResult> ResetPasswordAsync(ResetPasswordWithCode dto)
         {
             var user = await _userManager.FindByEmailAsync(dto.Email);
