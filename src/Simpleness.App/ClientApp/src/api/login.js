@@ -31,7 +31,7 @@ export function forgotPwd(email) {
 /* 使用code 重新设置密码 */
 export function resetPwd(email, password, code) {
   return request({
-    url: 'api/account/ResetPassword',
+    url: 'api/account/resetpwd',
     method: 'post',
     data: {
       email,

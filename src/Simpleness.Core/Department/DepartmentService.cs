@@ -152,7 +152,8 @@ namespace Simpleness.Core.Department
                 Id = temp.Id,
                 Label = temp.Name,
                 Description =temp.Description,
-                Order =temp.Order
+                Order =temp.Order,
+                Pid =temp.Pid
             };
             CreateTree(allDepartments, root);
             return root;
@@ -168,7 +169,8 @@ namespace Simpleness.Core.Department
                     Id = children[i].Id,
                     Label = children[i].Name,
                     Order =children[i].Order,
-                    Description =children[i].Description
+                    Description =children[i].Description,
+                    Pid =children[i].Pid
                     
                 });
                 CreateTree(departments, root.Children[i]);

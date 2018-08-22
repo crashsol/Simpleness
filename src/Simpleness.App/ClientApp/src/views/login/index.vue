@@ -96,7 +96,7 @@ export default {
   mounted() {
     if (this.$route.query['status']) {
       const result = this.$route.query['status']
-      if (result) {
+      if (result === 'success') {
         this.$message({
           message: '验证邮箱成功',
           type: 'success'

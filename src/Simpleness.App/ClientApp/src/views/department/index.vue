@@ -175,6 +175,7 @@ export default {
       })
     },
     handleUpdate(node, data) {
+      console.log(data)
       this.form.id = data.id
       this.form.pid = data.pid
       this.form.order = data.order
@@ -190,6 +191,7 @@ export default {
     update() {
       this.$refs['departmentForm'].validate(async valid => {
         const { id, name, description, order, pid } = this.form
+        console.log(this.form)
         await departUpdate(id, name, description, order, pid)
         await this.getDepartmentTree()
         this.dialogFormVisible = false

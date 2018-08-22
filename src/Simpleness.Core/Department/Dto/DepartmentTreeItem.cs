@@ -18,6 +18,8 @@ namespace Simpleness.Core.Department.Dto
 
         public string Description { get; set; }
 
+        public Guid Pid { get; set; }
+
         new public List<DepartmentTreeItem> Children { get; set; } = new List<DepartmentTreeItem>();
     }
 }
