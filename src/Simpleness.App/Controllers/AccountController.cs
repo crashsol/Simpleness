@@ -20,7 +20,8 @@ using Simpleness.App.Models;
 using Simpleness.DataEntityFramework;
 using Simpleness.DataEntityFramework.Entity;
 using Simpleness.Infrastructure.AspNetCore.Models;
-
+using System.Net.Http;
+using System.Web;
 
 namespace Simpleness.App.Controllers
 {
@@ -101,8 +102,8 @@ namespace Simpleness.App.Controllers
             }
             if (result.IsNotAllowed)
             {
-                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);               
-                var callbackUrl = Url.Link("ConfirmEmail", new { userId = user.Id, code = code });              
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);   
+                var callbackUrl = $"{_configuration["SiteUri"]}/api/account/ConfirmEmail?userId={user.Id}&code={HttpUtility.UrlEncode(code)}";
                 _logger.LogInformation($"{callbackUrl}");
                 await _emailService.SendAsync(user.Email, "邮箱验证", $"请点击链接,已验证你的邮箱<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>验证邮箱</a>.",true);               
                 return BadRequest("邮箱未验证，请登录邮箱验证！");
@@ -133,7 +134,7 @@ namespace Simpleness.App.Controllers
             {
                 _logger.LogInformation("User created a new account with password.");
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var callbackUrl = Url.Link("ConfirmEmail", new { userId = user.Id, code = code });   
+                var callbackUrl = $"{_configuration["SiteUri"]}/api/account/ConfirmEmail?userId={user.Id}&code={HttpUtility.UrlEncode(code)}";
                 _logger.LogInformation($"{callbackUrl}");
                 await _emailService.SendAsync(user.Email, "新用户注册,邮箱验证", $"请点击链接,已验证你的邮箱<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>验证邮箱</a>.", true);  
                 return Ok("注册成功，请登录邮箱验证！");
@@ -150,7 +151,7 @@ namespace Simpleness.App.Controllers
         /// <returns></returns>
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        [HttpGet("ConfirmEmail",Name = "ConfirmEmail")]        
+        [HttpGet("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmailAsync(string userId, string code)
         {
             var user = await _userManager.FindByIdAsync(userId);
