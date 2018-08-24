@@ -29,6 +29,7 @@ using Microsoft.AspNetCore.Authorization;
 using Simpleness.Core;
 using NETCore.MailKit.Extensions;
 using NETCore.MailKit.Infrastructure.Internal;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Simpleness.App
 {
@@ -119,6 +120,7 @@ namespace Simpleness.App
                 {
                     {"Bearer",new string[]{ } }
                 });
+                option.OperationFilter<FileOperation>();
 
             });
             #endregion          
@@ -176,7 +178,7 @@ namespace Simpleness.App
                 option.InvalidModelStateResponseFactory = (action =>
                 {
                     return new BadRequestObjectResult(action.ModelState.Values.SelectMany(v => v.Errors).Select(g => g.ErrorMessage).Aggregate((i, next) => $"{i},{next}"));
-               });
+                });
             });
 
 
@@ -224,6 +226,31 @@ namespace Simpleness.App
                     spa.UseProxyToSpaDevelopmentServer("http://localhost:9528");
                 }
             });
+        }
+
+
+        /// <summary>
+        /// 给Swagger 添加文件上传对话框
+        /// </summary>
+        public class FileOperation : IOperationFilter
+        {
+            public void Apply(Operation operation, OperationFilterContext context)
+            {
+                if (operation.OperationId.ToLower() == "apiuploadpost")
+                {
+                    operation.Parameters.Clear();//Clearing parameters
+                    operation.Parameters.Add(new NonBodyParameter
+                    {
+                        Name = "File",
+                        In = "formData",
+                        Description = "Upload Image",
+                        Required = true,
+                        Type = "file",     
+                        MultipleOf=10
+                    });
+                    operation.Consumes.Add("multipart/form-data");                 
+                }
+            }
         }
 
     }
