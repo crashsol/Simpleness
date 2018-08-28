@@ -22,6 +22,12 @@ namespace Simpleness.DataEntityFramework
 
         public DbSet<Department> Departments { get; set; }
 
+
+        /// <summary>
+        /// 审计日志记录
+        /// </summary>
+        public DbSet<Audit> Audits { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.AddEntityConfigurationFromAssembly(Assembly.GetExecutingAssembly());

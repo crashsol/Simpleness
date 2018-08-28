@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Simpleness.App.Filters;
 using Simpleness.Infrastructure.AspNetCore.Extensions;
 using Simpleness.Infrastructure.AspNetCore.Models;
 
 namespace Simpleness.App.Controllers
 {
+    [Audit]
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
@@ -18,5 +20,7 @@ namespace Simpleness.App.Controllers
         /// 获取当前登录用户信息
         /// </summary>
         protected UserIdentity UserIdentity => User.UserIdentity();
+
+     
     }
 }

@@ -185,6 +185,41 @@ namespace Simpleness.DataEntityFramework.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("Simpleness.DataEntityFramework.Entity.Audit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ComputerName");
+
+                    b.Property<double>("Duration");
+
+                    b.Property<string>("Exception");
+
+                    b.Property<DateTime>("ExcutionTime");
+
+                    b.Property<string>("IPAddress");
+
+                    b.Property<string>("MethodType");
+
+                    b.Property<string>("Parameters");
+
+                    b.Property<string>("Result");
+
+                    b.Property<string>("ServiceName");
+
+                    b.Property<int>("StatusCode");
+
+                    b.Property<string>("UserId");
+
+                    b.Property<string>("UserName");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Audit");
+                });
+
             modelBuilder.Entity("Simpleness.DataEntityFramework.Entity.Department", b =>
                 {
                     b.Property<Guid>("Id")

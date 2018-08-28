@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Simpleness.DataEntityFramework.Migrations
 {
-    public partial class Init : Migration
+    public partial class Add_Audit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -49,6 +49,30 @@ namespace Simpleness.DataEntityFramework.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Audit",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    UserId = table.Column<string>(nullable: true),
+                    UserName = table.Column<string>(nullable: true),
+                    ServiceName = table.Column<string>(nullable: true),
+                    MethodType = table.Column<string>(nullable: true),
+                    Parameters = table.Column<string>(nullable: true),
+                    StatusCode = table.Column<int>(nullable: false),
+                    Result = table.Column<string>(nullable: true),
+                    ExcutionTime = table.Column<DateTime>(nullable: false),
+                    Duration = table.Column<double>(nullable: false),
+                    IPAddress = table.Column<string>(nullable: true),
+                    ComputerName = table.Column<string>(nullable: true),
+                    Exception = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Audit", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -264,6 +288,9 @@ namespace Simpleness.DataEntityFramework.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Audit");
 
             migrationBuilder.DropTable(
                 name: "UserDepartment");
