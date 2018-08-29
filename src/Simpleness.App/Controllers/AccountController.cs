@@ -22,9 +22,11 @@ using Simpleness.DataEntityFramework.Entity;
 using Simpleness.Infrastructure.AspNetCore.Models;
 using System.Net.Http;
 using System.Web;
+using Simpleness.App.Filters;
 
 namespace Simpleness.App.Controllers
 {
+
     [AllowAnonymous]
     public class AccountController : BaseController
     {
@@ -34,9 +36,9 @@ namespace Simpleness.App.Controllers
         private readonly SimplenessDbContext _dbContext;
         private readonly JwtSettings _jwtSetting;
         private readonly ILogger _logger;
-        private readonly IConfiguration _configuration; 
+        private readonly IConfiguration _configuration;
 
-        private readonly IEmailService _emailService; 
+        private readonly IEmailService _emailService;
 
         public AccountController(
             UserManager<AppUser> userManager,
@@ -57,9 +59,10 @@ namespace Simpleness.App.Controllers
             _configuration = configuration;
         }
 
+        [DisableAudit]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        [HttpPost("login")]    
+        [HttpPost("login")]
         public async Task<IActionResult> LoginAsync(LoginViewModel model)
         {
 
@@ -83,7 +86,7 @@ namespace Simpleness.App.Controllers
                 claims.Add(new Claim("sub", user.Id.ToString()));
                 claims.Add(new Claim("name", user.UserName));
                 claims.Add(new Claim("avatar", user.Avatar ?? ""));
-                
+
                 //获得 加密后的key
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSetting.SecretKey));
                 var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);     //使用加密后的key 创建 登录证书
@@ -102,9 +105,9 @@ namespace Simpleness.App.Controllers
             }
             if (result.IsNotAllowed)
             {
-                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);   
-                var callbackUrl = $"{_configuration["SiteUri"]}/api/account/ConfirmEmail?userId={user.Id}&code={HttpUtility.UrlEncode(code)}";            
-                await _emailService.SendAsync(user.Email, "邮箱验证", $"请点击链接,已验证你的邮箱<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>验证邮箱</a>.",true);               
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var callbackUrl = $"{_configuration["SiteUri"]}/api/account/ConfirmEmail?userId={user.Id}&code={HttpUtility.UrlEncode(code)}";
+                await _emailService.SendAsync(user.Email, "邮箱验证", $"请点击链接,已验证你的邮箱<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>验证邮箱</a>.", true);
                 return BadRequest("邮箱未验证，请登录邮箱验证！");
             }
             //账号被锁定
@@ -124,7 +127,7 @@ namespace Simpleness.App.Controllers
         /// <returns></returns>
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        [HttpPost("register")]   
+        [HttpPost("register")]
         public async Task<IActionResult> RegisterAsync(RegisterModel Input)
         {
             var user = new AppUser { UserName = Input.Email, Email = Input.Email };
@@ -133,8 +136,8 @@ namespace Simpleness.App.Controllers
             {
                 _logger.LogInformation("User created a new account with password.");
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var callbackUrl = $"{_configuration["SiteUri"]}/api/account/ConfirmEmail?userId={user.Id}&code={HttpUtility.UrlEncode(code)}";              
-                await _emailService.SendAsync(user.Email, "新用户注册,邮箱验证", $"请点击链接,已验证你的邮箱<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>验证邮箱</a>.", true);  
+                var callbackUrl = $"{_configuration["SiteUri"]}/api/account/ConfirmEmail?userId={user.Id}&code={HttpUtility.UrlEncode(code)}";
+                await _emailService.SendAsync(user.Email, "新用户注册,邮箱验证", $"请点击链接,已验证你的邮箱<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>验证邮箱</a>.", true);
                 return Ok("注册成功，请登录邮箱验证！");
             }
             return BadRequest(result.Errors.Select(b => b.Description).Aggregate((i, next) => $"{i},{next}"));
@@ -160,7 +163,7 @@ namespace Simpleness.App.Controllers
             var result = await _userManager.ConfirmEmailAsync(user, code);
             if (!result.Succeeded)
             {
-               return Redirect("/login?status=fail");
+                return Redirect("/login?status=fail");
                 //return BadRequest($" '{userId}' 用户验证邮箱失败:");
             }
             return Redirect("/login?status=success");
@@ -174,7 +177,7 @@ namespace Simpleness.App.Controllers
         /// <returns></returns>      
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        [HttpPost("forgotpwd/{email}")]      
+        [HttpPost("forgotpwd/{email}")]
         public async Task<IActionResult> ForgotPasswordAsync([EmailAddress(ErrorMessage = "必须输入邮箱地址")]string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -183,8 +186,8 @@ namespace Simpleness.App.Controllers
                 return BadRequest("该邮箱未注册!");
             }
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var callbackUrl = $"{_configuration["SiteUri"]}/resetpwd?code={HttpUtility.UrlEncode(code)}";   
-            await _emailService.SendAsync(user.Email, "邮箱验证", $"请点击链接,重置你的密码<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>重置密码</a>.", true);          
+            var callbackUrl = $"{_configuration["SiteUri"]}/resetpwd?code={HttpUtility.UrlEncode(code)}";
+            await _emailService.SendAsync(user.Email, "邮箱验证", $"请点击链接,重置你的密码<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>重置密码</a>.", true);
             return Ok("请重置密码邮件已发送至你的邮箱,请查收!");
         }
 
@@ -196,7 +199,7 @@ namespace Simpleness.App.Controllers
 
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        [HttpPost("resetpwd")]      
+        [HttpPost("resetpwd")]
         public async Task<IActionResult> ResetPasswordAsync(ResetPasswordWithCode dto)
         {
             var user = await _userManager.FindByEmailAsync(dto.Email);

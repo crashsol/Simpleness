@@ -11,50 +11,87 @@ using Newtonsoft;
 using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
+using System.Diagnostics;
 
 namespace Simpleness.App.Filters
 {
-    public class AuditAttribute : ActionFilterAttribute 
+    /// <summary>
+    /// 日志记录标记
+    /// </summary>
+    public class AuditAttribute : ActionFilterAttribute
     {
 
-        private  SimplenessDbContext _dbContext;
+        private SimplenessDbContext _dbContext;
         private Audit audit;
-        public AuditAttribute()        {
-            
+        private Stopwatch stopwatch;
+        private bool auditSwitch;
+
+      
+        public AuditAttribute()
+        {         
         }
 
+        /// <summary>
+        /// 执行任务开始前
+        /// </summary>
+        /// <param name="context"></param>
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            audit = new Audit();
-            if(context.HttpContext.User.Identity.IsAuthenticated)
+        
+            auditSwitch = context.Filters.Any(b => b.GetType() == typeof(DisableAuditAttribute));         
+            if(!auditSwitch)
             {
-                var user = context.HttpContext.User;
-                audit.UserId = user.Claims.FirstOrDefault(b => b.Type == ClaimTypes.NameIdentifier).Value ?? "";
-                audit.UserName = user.Claims.FirstOrDefault(b=>b.Type =="name").Value ??"";
-            }
-            audit.ServiceName = context.HttpContext.Request.Path;
-            audit.MethodType = context.HttpContext.Request.Method;
-            audit.Parameters = JsonConvert.SerializeObject(context.ActionArguments);
-            audit.IPAddress = context.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
-            audit.ComputerName =  System.Net.Dns.GetHostEntry(context.HttpContext.Connection.RemoteIpAddress).HostName;
-            audit.ExcutionTime = DateTime.Now;
+                stopwatch = new Stopwatch();
+                audit = new Audit();
+                stopwatch.Start();
+                if (context.HttpContext.User.Identity.IsAuthenticated)
+                {
+                    var user = context.HttpContext.User;
+                    audit.UserId = user.Claims.FirstOrDefault(b => b.Type == ClaimTypes.NameIdentifier).Value ?? "";
+                    audit.UserName = user.Claims.FirstOrDefault(b => b.Type == "name").Value ?? "";
+                }
+                audit.ServiceName = context.HttpContext.Request.Path;
+                audit.MethodType = context.HttpContext.Request.Method;
+                audit.Parameters = JsonConvert.SerializeObject(context.ActionArguments);
+                audit.IPAddress = context.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+                audit.ComputerName = System.Net.Dns.GetHostEntry(context.HttpContext.Connection.RemoteIpAddress).HostName;
+                audit.ExcutionTime = DateTime.Now;
+
+            }         
+         
             base.OnActionExecuting(context);
         }
 
+        /// <summary>
+        /// 执行任务完成时记录
+        /// </summary>
+        /// <param name="context"></param>
         public override void OnActionExecuted(ActionExecutedContext context)
-        {
-            var result =JsonConvert.SerializeObject(context.Result);
-            var etime = DateTime.Now;
-            audit.Duration = (DateTime.Now - audit.ExcutionTime).TotalMilliseconds;
-            audit.Result = result;
-            audit.StatusCode = context.HttpContext.Response.StatusCode;
-            if(context.Exception !=null)
+        {           
+            if(!auditSwitch)
             {
-                audit.Exception = context.Exception.StackTrace;
-            }                
-            _dbContext = context.HttpContext.RequestServices.GetRequiredService<SimplenessDbContext>();
-            _dbContext.Audits.Add(audit);
-            _dbContext.SaveChanges();           
+                if (context.Result is ObjectResult)
+                {
+                    var resultObj = (context.Result as ObjectResult);
+                    audit.Result = JsonConvert.SerializeObject(resultObj.Value);
+                }
+                else
+                {
+                    var result = JsonConvert.SerializeObject(context.Result);
+                    audit.Result = result;
+                }
+                audit.StatusCode = context.HttpContext.Response.StatusCode;
+                if (context.Exception != null)
+                {
+                    audit.Exception = context.Exception.StackTrace;
+                }
+                stopwatch.Stop();
+                audit.Duration = stopwatch.ElapsedMilliseconds;
+                _dbContext = context.HttpContext.RequestServices.GetRequiredService<SimplenessDbContext>();
+                _dbContext.Audits.Add(audit);
+                _dbContext.SaveChanges();
+            }
+       
             base.OnActionExecuted(context);
         }
 
