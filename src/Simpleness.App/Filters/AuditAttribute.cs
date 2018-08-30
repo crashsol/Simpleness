@@ -37,13 +37,12 @@ namespace Simpleness.App.Filters
         /// <param name="context"></param>
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-        
+            stopwatch = new Stopwatch();
+            stopwatch.Start();
+            audit = new Audit();           
             auditSwitch = context.Filters.Any(b => b.GetType() == typeof(DisableAuditAttribute));         
             if(!auditSwitch)
-            {
-                stopwatch = new Stopwatch();
-                audit = new Audit();
-                stopwatch.Start();
+            {             
                 if (context.HttpContext.User.Identity.IsAuthenticated)
                 {
                     var user = context.HttpContext.User;

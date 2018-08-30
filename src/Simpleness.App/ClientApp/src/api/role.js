@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function roleList() {
+export function roleList(pagesize, currentpage) {
   return request({
-    url: '/api/role/list',
+    url: `/api/role/list/${pagesize}/${currentpage}`,
     method: 'get'
   })
 }

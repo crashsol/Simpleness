@@ -79,10 +79,15 @@ namespace Simpleness.Core.Role
 
         }
 
-        public async Task<List<RoleRDto>> RoleListsAsync()
+        public async Task<PageResultDto<RoleRDto>> RoleListsAsync(PageQueryDto pageQuery)
         {
-            var roles = await _dbContent.Roles.AsNoTracking().ToListAsync();
-            return _mapper.Map<List<RoleRDto>>(roles ?? new List<AppRole>());
+            var total = await _dbContent.Roles.CountAsync();
+            var roles = await _dbContent.Roles.AsNoTracking()
+                .OrderBy(b=>b.Name)
+                .Skip((pageQuery.CurrentPage - 1 )* (pageQuery.PageSize)).Take(pageQuery.PageSize)
+                .ToListAsync();
+            var items = _mapper.Map<List<RoleRDto>>(roles ?? new List<AppRole>());
+            return new PageResultDto<RoleRDto>(total, items);
         }
 
         public async Task UpdateRoleUsersAsync(RoleUsersDto dto)

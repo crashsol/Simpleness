@@ -22,11 +22,18 @@ namespace Simpleness.App.Controllers
             _roleService = roleService;
         }
 
-        [HttpGet("list")]
+        /// <summary>
+        /// 分页获取角色信息
+        /// </summary>
+        /// <param name="pageSize">每页条数</param>
+        /// <param name="currentPage">当前页码</param>
+        /// <returns></returns>
+        [HttpGet("list/{currentPage}/{pageSize}")]
         [ProducesResponseType(typeof(List<RoleRDto>), 200)]
-        public async Task<IActionResult> GetAsync()
+        public async Task<IActionResult> GetAsync(int pageSize,int currentPage)
         {
-            return Ok(await _roleService.RoleListsAsync());
+            PageQueryDto queryDto = new PageQueryDto { PageSize = pageSize, CurrentPage = currentPage };
+            return Ok(await _roleService.RoleListsAsync(queryDto));
         }
 
 

@@ -19,7 +19,15 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="60%">
+
+    <div class="pagination-container" style="padding-top:20px">
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+      :current-page="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit"
+      layout="total, sizes, prev, pager, next, jumper" :total="total">
+      </el-pagination>
+    </div>
+
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="60%" v-loading="listLoading">
       <el-form :rules="formRules" ref="roleForm" :model="form" label-width="80px">
         <el-input v-model="form.id" type="hidden"></el-input>
         <el-form-item label="角色名称" prop="name">
@@ -38,7 +46,7 @@
 
     <!-- 角色权限 -->
     <el-dialog :title="permissionModel.title" :visible.sync="permissionStatus" width="40%">
-      <el-tree :data="permissionModel.permissionData" show-checkbox  default-expand-all node-key="id" ref='permissionTree' >
+      <el-tree :data="permissionModel.permissionData" show-checkbox default-expand-all node-key="id" ref='permissionTree'>
       </el-tree>
       <span slot="footer">
         <el-button @click="permissionStatus = false">取 消</el-button>
@@ -74,7 +82,13 @@ import {
 export default {
   data() {
     return {
-      roles: [],
+      roles: null,
+      total: null,
+      listLoading: true,
+      listQuery: {
+        page: 1,
+        limit: 10
+      },
       form: {
         id: undefined,
         name: '',
@@ -117,8 +131,19 @@ export default {
   },
   methods: {
     async getRoles() {
-      const result = await roleList()
-      this.roles = result
+      this.listLoading = true
+      const result = await roleList(this.listQuery.page, this.listQuery.limit)
+      this.roles = result.items
+      this.total = result.totalCount
+      this.listLoading = false
+    },
+    handleSizeChange(val) {
+      this.listQuery.limit = val
+      this.getRoles()
+    },
+    handleCurrentChange(val) {
+      this.listQuery.page = val
+      this.getRoles()
     },
     // 清空表单
     resetForm() {

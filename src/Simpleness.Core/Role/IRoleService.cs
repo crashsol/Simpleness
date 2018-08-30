@@ -16,7 +16,7 @@ namespace Simpleness.Core.Role
         /// 获取所有角色信息，用于列表显示
         /// </summary>
         /// <returns></returns>
-        Task<List<RoleRDto>> RoleListsAsync();
+        Task<PageResultDto<RoleRDto>> RoleListsAsync(PageQueryDto queryDto);
 
         /// <summary>
         /// 根据角色ID，获取角色信息
