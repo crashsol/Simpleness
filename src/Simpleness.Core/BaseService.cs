@@ -17,18 +17,14 @@ namespace Simpleness.Core
     {
         public readonly SimplenessDbContext _dbContent;
         public readonly ILogger _logger;
-        public readonly IMapper _mapper;
-        public UserIdentity UserIdentity => _httpContextAccessor.HttpContext.User?.UserIdentity();
-        protected readonly IHttpContextAccessor _httpContextAccessor;
+        public readonly IMapper _mapper;   
         public BaseService(SimplenessDbContext dbContext,ILogger<BaseService> logger,
-            IMapper mapper,
-            IHttpContextAccessor httpContextAccessor
-            )
+            IMapper mapper)
         {
             _dbContent = dbContext;
             _logger = logger;
             _mapper = mapper;
-            _httpContextAccessor = httpContextAccessor;
+         
         }      
 
       

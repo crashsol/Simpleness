@@ -21,8 +21,7 @@ namespace Simpleness.Core.Department
     {
         public DepartmentService(SimplenessDbContext dbContext,
             ILogger<BaseService> logger,
-            IMapper mapper,
-            IHttpContextAccessor httpContextAccessor) : base(dbContext, logger, mapper, httpContextAccessor)
+            IMapper mapper ) : base(dbContext, logger, mapper)
         {
         }
 

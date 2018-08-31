@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Simpleness.DataEntityFramework.Entity
 {
-    public class Audit : BaseEntity<int>
+    public class Audit : BaseEntity<Guid>
     {
         /// <summary>
         /// 请求用户ID

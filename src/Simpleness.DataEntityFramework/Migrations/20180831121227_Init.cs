@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Simpleness.DataEntityFramework.Migrations
 {
-    public partial class Add_Audit : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -55,8 +55,7 @@ namespace Simpleness.DataEntityFramework.Migrations
                 name: "Audit",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<Guid>(nullable: false),
                     UserId = table.Column<string>(nullable: true),
                     UserName = table.Column<string>(nullable: true),
                     ServiceName = table.Column<string>(nullable: true),

@@ -38,7 +38,7 @@ export default {
   data() {
     return {
       loginForm: {
-        username: 'admin@qq.com',
+        username: '47147551@qq.com',
         password: '123qwe!@#'
       },
       loginRules: {

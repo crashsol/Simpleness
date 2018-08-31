@@ -20,13 +20,16 @@ namespace Simpleness.Core.Role
     public class RoleService : BaseService, IRoleService
     {
         private readonly RoleManager<AppRole> _roleManager;
+
+        private readonly TreeItem<string> _permissionTree; 
         public RoleService(SimplenessDbContext dbContext,
             ILogger<RoleService> logger,
             IMapper mapper,
             RoleManager<AppRole> roleManager,
-            IHttpContextAccessor httpContextAccessor) : base(dbContext, logger, mapper, httpContextAccessor)
+            TreeItem<string> permissionTree) : base(dbContext, logger, mapper)
         {
             _roleManager = roleManager;
+            _permissionTree = permissionTree;
         }
 
         public async Task<Guid> CreateAsync(RoleCDto dto)
@@ -120,13 +123,12 @@ namespace Simpleness.Core.Role
         {
             var role = await _dbContent.Roles.FindAsync(roleid);
             if (role == null)
-                throw new UserOperationException("角色不存在");
-            var treeItem = _httpContextAccessor.HttpContext.RequestServices.GetService<TreeItem<string>>();
+                throw new UserOperationException("角色不存在");        
             var roleClaims = await _roleManager.GetClaimsAsync(role);
             var selectPermmissonClaims = roleClaims.Where(b => b.Type == "permission").Select(b => b.Value).ToList();
             return new TreeDto<string>
             {
-                Tree = treeItem,
+                Tree = _permissionTree,
                 SelectKeys = selectPermmissonClaims ?? new List<string>()
             };
         }

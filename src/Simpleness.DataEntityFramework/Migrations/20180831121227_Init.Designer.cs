@@ -10,8 +10,8 @@ using Simpleness.DataEntityFramework;
 namespace Simpleness.DataEntityFramework.Migrations
 {
     [DbContext(typeof(SimplenessDbContext))]
-    [Migration("20180828131547_Add_Audit")]
-    partial class Add_Audit
+    [Migration("20180831121227_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -189,9 +189,8 @@ namespace Simpleness.DataEntityFramework.Migrations
 
             modelBuilder.Entity("Simpleness.DataEntityFramework.Entity.Audit", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("ComputerName");
 

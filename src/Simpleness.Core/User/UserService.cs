@@ -19,11 +19,10 @@ namespace Simpleness.Core.User
 
         private readonly UserManager<AppUser> _userManager;
 
-        public UserService(SimplenessDbContext dbContext, ILogger<UserService> logger,
-              IHttpContextAccessor httpContextAccessor,
+        public UserService(SimplenessDbContext dbContext, ILogger<UserService> logger,       
               UserManager<AppUser> userManager,
               IMapper mapper
-              ) : base(dbContext, logger,mapper, httpContextAccessor)
+              ) : base(dbContext, logger,mapper)
         {
             _userManager = userManager;
         }
