@@ -138,7 +138,8 @@ namespace Simpleness.App
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp/dist";
+                //设置Sap访问的根目录，与ClientApp bulid文件输出路径一致
+                configuration.RootPath = "wwwroot/dist";
             });
 
             var mailOption = new MailKitOptions();
