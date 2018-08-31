@@ -1,8 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <UserSecretsId>9501e748-a2e0-4774-b94f-26b63b70f155</UserSecretsId>
+    <!--Add SPA BaseDir-->
+    <SpaRoot>ClientApp\</SpaRoot>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -17,10 +19,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="ClientApp\**" />
-    <Content Remove="ClientApp\**" />
-    <EmbeddedResource Remove="ClientApp\**" />
-    <None Remove="ClientApp\**" />
+    <Compile Remove="$(SpaRoot)**" />
+    <Content Remove="$(SpaRoot)**" />
+    <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" /> 
   </ItemGroup>
 
   <ItemGroup>
@@ -49,5 +50,7 @@
   <ItemGroup>
     <Folder Include="wwwroot\upload\" />
   </ItemGroup>
+  
+  
 
 </Project>
