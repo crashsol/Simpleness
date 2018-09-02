@@ -2,8 +2,7 @@
 echo "Windows Docker build"
 echo "First Bulid SPA "
 cd src/Simpleness.App/ClientApp 
-start npm run build
-pause
+call npm run build
 echo "build application"
 cd ..
 dotnet publish -c Release -o bin/publish/Release/netcoreapp2.1
