@@ -50,6 +50,12 @@
   <ItemGroup>
     <Folder Include="wwwroot\upload\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Dockerfile">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   
   
 

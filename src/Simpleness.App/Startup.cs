@@ -47,7 +47,7 @@ namespace Simpleness.App
         {
 
             services.AddDbContext<SimplenessDbContext>(option =>
-            {
+            {              
                 option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
             //identity setting
