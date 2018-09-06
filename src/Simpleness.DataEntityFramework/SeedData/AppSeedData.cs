@@ -33,7 +33,8 @@ namespace Simpleness.DataEntityFramework.SeedData
                 var user = new AppUser
                 {
                     UserName = "47147551@qq.com",
-                    Email = "47147551@qq.com"
+                    Email = "47147551@qq.com",
+                    EmailConfirmed = true
                 };
 
                 var result = await _userManager.CreateAsync(user, "123qwe!@#");

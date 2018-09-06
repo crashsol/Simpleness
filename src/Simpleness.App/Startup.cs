@@ -47,8 +47,9 @@ namespace Simpleness.App
         {
 
             services.AddDbContext<SimplenessDbContext>(option =>
-            {              
-                option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            {
+                option.UseSqlite("Data Source = First.db");
+               //option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
             //identity setting
             services.AddIdentity<AppUser, AppRole>()
@@ -144,9 +145,7 @@ namespace Simpleness.App
 
             var mailOption = new MailKitOptions();
             Configuration.GetSection("MailKitOptions").Bind(mailOption);
-
-            //load from secrtes.json
-             mailOption.Password = Configuration["Password"];
+          
             //Add MailKit
             services.AddMailKit(optionbuilder =>
             {
@@ -206,10 +205,9 @@ namespace Simpleness.App
             }
             else
             {
-                app.UseHsts();
-                app.UseHttpsRedirection();
+                app.UseHsts();             
             }
-
+            app.UseHttpsRedirection();
             //认证
             app.UseAuthentication();
 
