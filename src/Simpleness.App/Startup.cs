@@ -49,7 +49,7 @@ namespace Simpleness.App
             services.AddDbContext<SimplenessDbContext>(option =>
             {
                 option.UseSqlite("Data Source = First.db");
-               //option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                //option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
             //identity setting
             services.AddIdentity<AppUser, AppRole>()
@@ -60,8 +60,10 @@ namespace Simpleness.App
             {
                 option.SignIn.RequireConfirmedEmail = true;
                 option.Password.RequireUppercase = false;
+                option.ClaimsIdentity.UserIdClaimType = "sub";
             });
 
+          
 
 
             #region JWT配置
@@ -71,9 +73,11 @@ namespace Simpleness.App
             services.Configure<JwtSettings>(Configuration.GetSection("JwtSetting"));
             Configuration.GetSection("JwtSetting").Bind(jwtSetting);
 
+
             //添加Jwt验证
             services.AddAuthentication(option =>
             {
+                option.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
                 option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, option =>
@@ -91,6 +95,8 @@ namespace Simpleness.App
                      ClockSkew = TimeSpan.FromMinutes(10),
                  };
              });
+
+        
 
 
             #endregion
@@ -145,7 +151,7 @@ namespace Simpleness.App
 
             var mailOption = new MailKitOptions();
             Configuration.GetSection("MailKitOptions").Bind(mailOption);
-          
+
             //Add MailKit
             services.AddMailKit(optionbuilder =>
             {
@@ -205,9 +211,9 @@ namespace Simpleness.App
             }
             else
             {
-                app.UseHsts();             
+                app.UseHsts();
+                app.UseHttpsRedirection();
             }
-            app.UseHttpsRedirection();
             //认证
             app.UseAuthentication();
 
@@ -244,10 +250,10 @@ namespace Simpleness.App
                         In = "formData",
                         Description = "Upload Image",
                         Required = true,
-                        Type = "file",     
-                        MultipleOf=10
+                        Type = "file",
+                        MultipleOf = 10
                     });
-                    operation.Consumes.Add("multipart/form-data");                 
+                    operation.Consumes.Add("multipart/form-data");
                 }
             }
         }

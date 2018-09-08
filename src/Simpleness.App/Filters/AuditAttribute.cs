@@ -45,9 +45,9 @@ namespace Simpleness.App.Filters
             {             
                 if (context.HttpContext.User.Identity.IsAuthenticated)
                 {
-                    var user = context.HttpContext.User;
-                    audit.UserId = user.Claims.FirstOrDefault(b => b.Type == ClaimTypes.NameIdentifier).Value ?? "";
-                    audit.UserName = user.Claims.FirstOrDefault(b => b.Type == "name").Value ?? "";
+                    var user = context.HttpContext.User.UserIdentity();
+                    audit.UserId = user.Id.ToString();
+                    audit.UserName = user.UserName;
                 }
                 audit.ServiceName = context.HttpContext.Request.Path;
                 audit.MethodType = context.HttpContext.Request.Method;

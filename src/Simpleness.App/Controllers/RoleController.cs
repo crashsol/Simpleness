@@ -31,7 +31,7 @@ namespace Simpleness.App.Controllers
         [HttpGet("list/{currentPage}/{pageSize}")]
         [ProducesResponseType(typeof(List<RoleRDto>), 200)]
         public async Task<IActionResult> GetAsync(int pageSize,int currentPage)
-        {
+        {         
             PageQueryDto queryDto = new PageQueryDto { PageSize = pageSize, CurrentPage = currentPage };
             return Ok(await _roleService.RoleListsAsync(queryDto));
         }

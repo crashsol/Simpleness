@@ -77,7 +77,7 @@ namespace Simpleness.App.Controllers
             {
 
                 //获取用户所有的claims
-                var userclaims = await _userManager.GetClaimsAsync(user);
+                var userclaims = await _userManager.GetClaimsAsync(user);            
                 var roleClaims = await _dbContext.UserRoles.Join(_dbContext.Roles, a => a.RoleId, b => b.Id, (a, b) => new { a, b })
                                                     .Join(_dbContext.RoleClaims, x => x.b.Id, c => c.RoleId, (x, c) => new { x, c })
                                                     .AsNoTracking().Where(b => b.x.a.UserId == user.Id)
