@@ -30,6 +30,7 @@ using Simpleness.Core;
 using NETCore.MailKit.Extensions;
 using NETCore.MailKit.Infrastructure.Internal;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Simpleness.App
 {
@@ -48,8 +49,8 @@ namespace Simpleness.App
 
             services.AddDbContext<SimplenessDbContext>(option =>
             {
-                option.UseSqlite("Data Source = First.db");
-                //option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+               //option.UseSqlite("Data Source = Simpleness.db");
+               option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
             //identity setting
             services.AddIdentity<AppUser, AppRole>()
@@ -60,7 +61,7 @@ namespace Simpleness.App
             {
                 option.SignIn.RequireConfirmedEmail = true;
                 option.Password.RequireUppercase = false;
-                option.ClaimsIdentity.UserIdClaimType = "sub";
+                
             });
 
           
@@ -73,6 +74,8 @@ namespace Simpleness.App
             services.Configure<JwtSettings>(Configuration.GetSection("JwtSetting"));
             Configuration.GetSection("JwtSetting").Bind(jwtSetting);
 
+            //清除默认的JwtToken默认的绑定
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             //添加Jwt验证
             services.AddAuthentication(option =>

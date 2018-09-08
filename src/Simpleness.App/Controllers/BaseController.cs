@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Simpleness.App.Filters;
@@ -11,7 +12,7 @@ using Simpleness.Infrastructure.AspNetCore.Models;
 namespace Simpleness.App.Controllers
 {
     [Audit]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class BaseController : ControllerBase
