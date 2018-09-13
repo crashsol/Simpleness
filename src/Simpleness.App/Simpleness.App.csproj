@@ -5,6 +5,7 @@
     <UserSecretsId>9501e748-a2e0-4774-b94f-26b63b70f155</UserSecretsId>
     <!--Add SPA BaseDir-->
     <SpaRoot>ClientApp\</SpaRoot>
+    <TypeScriptToolsVersion>3.0</TypeScriptToolsVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
