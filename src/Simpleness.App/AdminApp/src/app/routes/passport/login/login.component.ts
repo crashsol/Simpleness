@@ -108,36 +108,30 @@ export class UserLoginComponent implements OnDestroy {
         // 请求后台获取Token
         this.httpClient.post('Account/login', { 'username': this.userName.value, 'password': this.password.value })
             .subscribe(
-                (result: any) => {  // 成功获取到Token后
-                    if (result) {
-                        // 清空路由复用信息
-                        this.reuseTabService.clear();
-                        const token: string = result.token;
-
-                        // 设置Token信息
-                        this.tokenService.set({
-                            token: token
-                        });
-                        // 在获取出来解析token，从中获取用户信息及权限信息
-                        const jwtToken = this.tokenService.get(JWTTokenModel);
-
-                        this.tokenService.set({
-                            token: jwtToken.token,
-                            userName: jwtToken.payload.name,
+                (result: any) => {
+                    console.log(11111);
+                    console.log(result);
+                    // 成功获取到Token后
+                    this.loading = false;
+                    // 清空路由复用信息
+                    this.reuseTabService.clear();
+                    const token: string = result.token;
+                    // 设置Token信息
+                    this.tokenService.set({
+                        token: token
+                    });
+                    // 在获取出来解析token，从中获取用户信息及权限信息
+                    const jwtToken = this.tokenService.get(JWTTokenModel);
+                    this.tokenService.set({
+                        token: jwtToken.token,
+                        user: {
+                            name: jwtToken.payload.name,
                             email: jwtToken.payload.name,
-
-
-                        });
-
-
-
-
-                        // 直接跳转
-                        this.router.navigate(['/']);
-                    } else {
-                        this.loading = false;
-                    }
-                }
+                        }
+                    });
+                    // 直接跳转
+                    this.router.navigate(['/']); },
+                    err => this.loading = false
             );
     }
 
