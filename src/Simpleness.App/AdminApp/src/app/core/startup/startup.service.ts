@@ -54,13 +54,6 @@ export class StartupService {
   }
 
   private viaMock(resolve: any, reject: any) {
-    // const tokenData = this.tokenService.get();
-    // if (!tokenData.token) {
-    //   this.injector.get(Router).navigateByUrl('/passport/login');
-    //   resolve({});
-    //   return;
-    // }
-    // mock
     const app: any = {
       name: `Crashsol`,
       description: `Ng-zorro admin panel front-end framework`
