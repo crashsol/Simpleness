@@ -36,3 +36,11 @@
 2018-09-14 13:23:39.6233 Info Adding target File Target[ownFile-web]
 2018-09-14 13:23:39.6233 Info Configured from an XML element in D:\Visual Studio 2017\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\nlog.config...
 2018-09-14 13:23:39.6566 Info Found 45 configuration items
+2018-09-17 19:04:40.4661 Info Message Template Auto Format enabled
+2018-09-17 19:04:40.4772 Info Loading assembly: NLog.Web.AspNetCore
+2018-09-17 19:04:40.5692 Info Adding target File Target[allfile]
+2018-09-17 19:04:40.5796 Info Adding target File Target[ownFile-web]
+2018-09-17 19:04:40.5796 Info Configured from an XML element in D:\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\nlog.config...
+2018-09-17 19:04:40.5959 Info Found 45 configuration items
+2018-09-17 19:06:48.7760 Info Shutting down logging...
+2018-09-17 19:06:48.8121 Info Logger has been shut down.

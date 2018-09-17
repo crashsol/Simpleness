@@ -13,6 +13,7 @@ import {
 import { ReuseTabService } from '@delon/abc';
 import { environment } from '@env/environment';
 import { StartupService } from '@core/startup/startup.service';
+import { ACLService } from '@delon/acl';
 
 @Component({
     selector: 'passport-login',
@@ -27,6 +28,7 @@ export class UserLoginComponent implements OnDestroy {
         private router: Router,
         public msg: NzMessageService,
         private modalSrv: NzModalService,
+        private aclSrv: ACLService ,
         private settingsService: SettingsService,
         private socialService: SocialService,
         private httpClient: _HttpClient,
@@ -129,6 +131,7 @@ export class UserLoginComponent implements OnDestroy {
                             email: jwtToken.payload.name,
                         }
                     });
+                    this.aclSrv.setRole(jwtToken.payload.Permissions);
                     // 直接跳转
                     this.router.navigate(['/']); },
                     err => this.loading = false

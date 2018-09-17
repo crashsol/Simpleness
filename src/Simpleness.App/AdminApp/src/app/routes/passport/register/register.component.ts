@@ -14,18 +14,6 @@ import { NzMessageService } from 'ng-zorro-antd';
   styleUrls: ['./register.component.less'],
 })
 export class UserRegisterComponent implements OnDestroy {
-  form: FormGroup;
-  error = '';
-  type = 0;
-  loading = false;
-  visible = false;
-  status = 'pool';
-  progress = 0;
-  passwordProgressMap = {
-    ok: 'success',
-    pass: 'normal',
-    pool: 'exception',
-  };
 
   constructor(
     fb: FormBuilder,
@@ -56,6 +44,43 @@ export class UserRegisterComponent implements OnDestroy {
     });
   }
 
+  // region: fields
+
+  get mail() {
+    return this.form.controls.mail;
+  }
+  get password() {
+    return this.form.controls.password;
+  }
+  get confirm() {
+    return this.form.controls.confirm;
+  }
+  get mobile() {
+    return this.form.controls.mobile;
+  }
+  get captcha() {
+    return this.form.controls.captcha;
+  }
+  form: FormGroup;
+  error = '';
+  type = 0;
+  loading = false;
+  visible = false;
+  status = 'pool';
+  progress = 0;
+  passwordProgressMap = {
+    ok: 'success',
+    pass: 'normal',
+    pool: 'exception',
+  };
+
+  // endregion
+
+  // region: get captcha
+
+  count = 0;
+  interval$: any;
+
   static checkPassword(control: FormControl) {
     if (!control) return null;
     const self: any = this;
@@ -76,31 +101,6 @@ export class UserRegisterComponent implements OnDestroy {
     }
     return null;
   }
-
-  // region: fields
-
-  get mail() {
-    return this.form.controls.mail;
-  }
-  get password() {
-    return this.form.controls.password;
-  }
-  get confirm() {
-    return this.form.controls.confirm;
-  }
-  get mobile() {
-    return this.form.controls.mobile;
-  }
-  get captcha() {
-    return this.form.controls.captcha;
-  }
-
-  // endregion
-
-  // region: get captcha
-
-  count = 0;
-  interval$: any;
 
   getCaptcha() {
     this.count = 59;
