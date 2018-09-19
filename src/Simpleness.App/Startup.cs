@@ -31,6 +31,7 @@ using NETCore.MailKit.Extensions;
 using NETCore.MailKit.Infrastructure.Internal;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IdentityModel.Tokens.Jwt;
+using AspNetCore.WeixinOAuth;
 
 namespace Simpleness.App
 {
@@ -49,8 +50,8 @@ namespace Simpleness.App
 
             services.AddDbContext<SimplenessDbContext>(option =>
             {
-               //option.UseSqlite("Data Source = Simpleness.db");
-               option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                //option.UseSqlite("Data Source = Simpleness.db");
+                option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
             //identity setting
             services.AddIdentity<AppUser, AppRole>()
@@ -61,11 +62,8 @@ namespace Simpleness.App
             {
                 option.SignIn.RequireConfirmedEmail = true;
                 option.Password.RequireUppercase = false;
-                
+
             });
-
-          
-
 
             #region JWT配置
 
@@ -99,10 +97,19 @@ namespace Simpleness.App
                  };
              });
 
-        
+
 
 
             #endregion
+
+
+            //services.AddAuthentication().AddWeixinOAuth(option =>
+            //{
+              
+            //    option.AppId = Configuration["WeixinAuth:AppId"];
+            //    option.AppSecret = Configuration["WeixinAuth:AppSecret"];
+            //    option.SaveTokens = true;
+            //});
 
             #region Swashbuckle Api文档配置
             services.AddSwaggerGen(option =>
