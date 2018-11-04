@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
 namespace Simpleness.App.Filters
 {
@@ -28,7 +29,8 @@ namespace Simpleness.App.Filters
 
       
         public AuditAttribute()
-        {         
+        {
+
         }
 
         /// <summary>
@@ -86,8 +88,8 @@ namespace Simpleness.App.Filters
                 }
                 stopwatch.Stop();
                 audit.Duration = stopwatch.ElapsedMilliseconds;
-                _dbContext = context.HttpContext.RequestServices.GetRequiredService<SimplenessDbContext>();
-                _dbContext.Audits.Add(audit);
+                _dbContext = context.HttpContext.RequestServices.GetRequiredService<SimplenessDbContext>(); 
+                _dbContext.Add(audit);              
                 _dbContext.SaveChanges();
             }
        
