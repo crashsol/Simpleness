@@ -56,3 +56,35 @@
 2018-11-04 19:47:49.5259 Info Adding target File Target[ownFile-web]
 2018-11-04 19:47:49.5341 Info Configured from an XML element in D:\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\nlog.config...
 2018-11-04 19:47:49.5341 Info Found 45 configuration items
+2018-11-10 19:41:09.8105 Info Message Template Auto Format enabled
+2018-11-10 19:41:09.8369 Info Loading assembly: NLog.Web.AspNetCore
+2018-11-10 19:41:09.9782 Info Adding target File Target[allfile]
+2018-11-10 19:41:10.0154 Info Adding target File Target[ownFile-web]
+2018-11-10 19:41:10.0226 Info Configured from an XML element in D:\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\nlog.config...
+2018-11-10 19:41:10.0226 Info Found 45 configuration items
+2018-11-10 19:59:57.3253 Info Message Template Auto Format enabled
+2018-11-10 19:59:57.3346 Info Loading assembly: NLog.Web.AspNetCore
+2018-11-10 19:59:57.4433 Info Adding target File Target[allfile]
+2018-11-10 19:59:57.4433 Info Adding target File Target[ownFile-web]
+2018-11-10 19:59:57.4593 Info Configured from an XML element in D:\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\nlog.config...
+2018-11-10 19:59:57.4593 Info Found 45 configuration items
+2018-11-10 20:07:28.0159 Info Message Template Auto Format enabled
+2018-11-10 20:07:28.0284 Info Loading assembly: NLog.Web.AspNetCore
+2018-11-10 20:07:28.1127 Info Adding target File Target[allfile]
+2018-11-10 20:07:28.1313 Info Adding target File Target[ownFile-web]
+2018-11-10 20:07:28.1313 Info Configured from an XML element in D:\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\nlog.config...
+2018-11-10 20:07:28.1489 Info Found 45 configuration items
+2018-11-10 20:09:15.7822 Info Message Template Auto Format enabled
+2018-11-10 20:09:15.7920 Info Loading assembly: NLog.Web.AspNetCore
+2018-11-10 20:09:15.8967 Info Adding target File Target[allfile]
+2018-11-10 20:09:15.9157 Info Adding target File Target[ownFile-web]
+2018-11-10 20:09:15.9363 Info Configured from an XML element in D:\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\nlog.config...
+2018-11-10 20:09:15.9861 Info Found 45 configuration items
+2018-11-10 20:25:18.2256 Info Message Template Auto Format enabled
+2018-11-10 20:25:18.2256 Info Loading assembly: NLog.Web.AspNetCore
+2018-11-10 20:25:18.3616 Info Adding target File Target[allfile]
+2018-11-10 20:25:18.3733 Info Adding target File Target[ownFile-web]
+2018-11-10 20:25:18.3811 Info Configured from an XML element in D:\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\nlog.config...
+2018-11-10 20:25:18.3811 Info Found 45 configuration items
+2018-11-10 20:27:10.2411 Info Shutting down logging...
+2018-11-10 20:27:10.2769 Info Logger has been shut down.

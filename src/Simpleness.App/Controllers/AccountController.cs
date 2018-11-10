@@ -136,7 +136,15 @@ namespace Simpleness.App.Controllers
             {
                 _logger.LogInformation("User created a new account with password.");
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var callbackUrl = $"{_configuration["SiteUri"]}/api/account/ConfirmEmail?userId={user.Id}&code={HttpUtility.UrlEncode(code)}";
+
+
+                var callbackUrl = Url.Action(
+                    "ConfirmEmailAsync",
+                    "Account",
+                    new { code = HttpUtility.UrlEncode(code),userId = user.Id },
+                    protocol: Request.Scheme);
+
+             //   var callbackUrl = $"{HttpContext.Request.PathBase}/api/account/ConfirmEmail?userId={user.Id}&code={HttpUtility.UrlEncode(code)}";
                 await _emailService.SendAsync(user.Email, "新用户注册,邮箱验证", $"请点击链接,已验证你的邮箱<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>验证邮箱</a>.", true);
                 return Ok("注册成功，请登录邮箱验证！");
             }
@@ -186,7 +194,15 @@ namespace Simpleness.App.Controllers
                 return BadRequest("该邮箱未注册!");
             }
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var callbackUrl = $"{_configuration["SiteUri"]}/resetpwd?code={HttpUtility.UrlEncode(code)}";
+
+            var callbackUrl = Url.Action(
+                   "ResetPasswordAsync",
+                   "Account",
+                   new { code = HttpUtility.UrlEncode(code) },
+                   protocol: Request.Scheme);
+
+
+           // var callbackUrl = $"{_configuration["SiteUri"]}/resetpwd?code={HttpUtility.UrlEncode(code)}";
             await _emailService.SendAsync(user.Email, "邮箱验证", $"请点击链接,重置你的密码<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>重置密码</a>.", true);
             return Ok("请重置密码邮件已发送至你的邮箱,请查收!");
         }
