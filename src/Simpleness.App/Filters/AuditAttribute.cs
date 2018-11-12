@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Simpleness.Core.Audit;
 
 namespace Simpleness.App.Filters
 {
@@ -22,12 +23,12 @@ namespace Simpleness.App.Filters
     public class AuditAttribute : ActionFilterAttribute
     {
 
-        private SimplenessDbContext _dbContext;
+        private IAuditService _auditService;
         private Audit audit;
         private Stopwatch stopwatch;
         private bool auditSwitch;
+        
 
-      
         public AuditAttribute()
         {
 
@@ -88,9 +89,8 @@ namespace Simpleness.App.Filters
                 }
                 stopwatch.Stop();
                 audit.Duration = stopwatch.ElapsedMilliseconds;
-                _dbContext = context.HttpContext.RequestServices.GetRequiredService<SimplenessDbContext>(); 
-                _dbContext.Add(audit);              
-                _dbContext.SaveChanges();
+                _auditService = context.HttpContext.RequestServices.GetRequiredService<IAuditService>();
+                _auditService.CreateAsync(audit);              
             }
        
             base.OnActionExecuted(context);

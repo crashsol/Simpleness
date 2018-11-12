@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Simpleness.Core.Audit;
 using Simpleness.Core.Department;
 using Simpleness.Core.Role;
 using Simpleness.Core.User;
@@ -20,6 +21,7 @@ namespace Simpleness.Core
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IDepartmentService, DepartmentService>();
+            services.AddScoped<IAuditService, AuditService>();
             return services;
         }
     }
