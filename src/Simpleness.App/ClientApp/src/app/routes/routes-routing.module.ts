@@ -17,14 +17,19 @@ import { UserLockComponent } from './passport/lock/lock.component';
 import { Exception403Component } from './exception/403.component';
 import { Exception404Component } from './exception/404.component';
 import { Exception500Component } from './exception/500.component';
+import { ACLGuard } from '@delon/acl';
 
 const routes: Routes = [
   {
     path: '',
     component: LayoutDefaultComponent,
+    canActivate: [ACLGuard],
+    data: { guard: 'System_' },
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: DashboardComponent, data: { title: '仪表盘', titleI18n: 'dashboard' } },
+      {
+        path: 'dashboard', component: DashboardComponent, data: { title: '仪表盘', titleI18n: 'dashboard', }
+      },
       // 业务子模块
       // { path: 'widgets', loadChildren: './widgets/widgets.module#WidgetsModule' }
     ]
@@ -52,7 +57,7 @@ const routes: Routes = [
   { path: '403', component: Exception403Component },
   { path: '404', component: Exception404Component },
   { path: '500', component: Exception500Component },
-  { path: '**', redirectTo: 'dashboard' }
+  { path: '**', redirectTo: 'passport/login' }
 ];
 
 @NgModule({

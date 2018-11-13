@@ -3,9 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  SERVER_URL: `./`,
+  SERVER_URL: `http://localhost:5006/api/`,
   production: false,
-  useHash: true,
+  useHash: false,
   hmr: false,
 };
 

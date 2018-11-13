@@ -1,4 +1,6 @@
-import { SettingsService } from '@delon/theme';
+import { ACLService } from '@delon/acl';
+import { HttpClient } from '@angular/common/http';
+import { SettingsService, _HttpClient } from '@delon/theme';
 import { Component, OnDestroy, Inject, Optional } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -8,6 +10,7 @@ import {
   SocialOpenType,
   TokenService,
   DA_SERVICE_TOKEN,
+  JWTTokenModel,
 } from '@delon/auth';
 import { ReuseTabService } from '@delon/abc';
 import { environment } from '@env/environment';
@@ -20,10 +23,6 @@ import { StartupService } from '@core/startup/startup.service';
   providers: [SocialService],
 })
 export class UserLoginComponent implements OnDestroy {
-  form: FormGroup;
-  error = '';
-  type = 0;
-  loading = false;
 
   constructor(
     fb: FormBuilder,
@@ -37,10 +36,13 @@ export class UserLoginComponent implements OnDestroy {
     private reuseTabService: ReuseTabService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService,
     private startupSrv: StartupService,
+    private httpClient: _HttpClient,
+    private aclService: ACLService,
+    private settingService: SettingsService
   ) {
     this.form = fb.group({
-      userName: [null, [Validators.required, Validators.minLength(5)]],
-      password: [null, Validators.required],
+      userName: ['47147551@qq.com', [Validators.required, Validators.minLength(5)]],
+      password: ['123qwe!@#', Validators.required],
       mobile: [null, [Validators.required, Validators.pattern(/^1\d{10}$/)]],
       captcha: [null, [Validators.required]],
       remember: [true],
@@ -62,17 +64,21 @@ export class UserLoginComponent implements OnDestroy {
   get captcha() {
     return this.form.controls.captcha;
   }
+  form: FormGroup;
+  error = '';
+  type = 0;
+  loading = false;
+
+  // region: get captcha
+
+  count = 0;
+  interval$: any;
 
   // endregion
 
   switch(ret: any) {
     this.type = ret.index;
   }
-
-  // region: get captcha
-
-  count = 0;
-  interval$: any;
 
   getCaptcha() {
     this.count = 59;
@@ -104,36 +110,46 @@ export class UserLoginComponent implements OnDestroy {
     // 默认配置中对所有HTTP请求都会强制[校验](https://ng-alain.com/auth/getting-started) 用户 Token
     // 然一般来说登录请求不需要校验，因此可以在请求URL加上：`/login?_allow_anonymous=true` 表示不触发用户 Token 校验
     this.loading = true;
-    setTimeout(() => {
-      this.loading = false;
-      if (this.type === 0) {
-        if (
-          this.userName.value !== 'admin' ||
-          this.password.value !== '888888'
-        ) {
-          this.error = `账户或密码错误`;
-          return;
-        }
-      }
 
-      // 清空路由复用信息
-      this.reuseTabService.clear();
-      // 设置Token信息
-      this.tokenService.set({
-        token: '123456789',
-        name: this.userName.value,
-        email: `cipchk@qq.com`,
-        id: 10000,
-        time: +new Date(),
-      });
-      // 重新获取 StartupService 内容，若其包括 User 有关的信息的话
-      // this.startupSrv.load().then(() => this.router.navigate(['/']));
-      // 否则直接跳转
-      this.router.navigate(['/']);
-    }, 1000);
+
+    // 请求后台获取Token
+    this.httpClient.post('Account/login', { 'username': this.userName.value, 'password': this.password.value })
+      .subscribe(
+        (result: any) => {
+
+          console.log(result);
+          // 成功获取到Token后
+          this.loading = false;
+          // 清空路由复用信息
+          this.reuseTabService.clear();
+
+          const token: string = result.token;
+          // 设置Token信息
+          this.tokenService.set({
+            token: token
+          });
+          // 在获取出来解析token，从中获取用户信息及权限信息
+          const jwtToken = this.tokenService.get(JWTTokenModel);
+          console.log(jwtToken);
+
+          // 用户信息：包括姓名、头像、邮箱地址
+          const user = {
+            name: jwtToken.payload.name,
+            email: jwtToken.payload.name,
+            avatar: './assets/tmp/img/avatar.jpg',
+          };
+          this.settingService.setUser(user);
+
+          this.aclService.setRole(jwtToken.payload.permission);
+          // 直接跳转
+          this.router.navigate(['/dashboard']);
+        },
+        err => this.loading = false
+      );
+
   }
 
-  // region: social
+  // region: social 第三方登录认证
 
   open(type: string, openType: SocialOpenType = 'href') {
     let url = ``;
@@ -177,7 +193,6 @@ export class UserLoginComponent implements OnDestroy {
   }
 
   // endregion
-
   ngOnDestroy(): void {
     if (this.interval$) clearInterval(this.interval$);
   }
