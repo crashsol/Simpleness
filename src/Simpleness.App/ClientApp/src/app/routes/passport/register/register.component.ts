@@ -1,4 +1,5 @@
-import { Component, OnDestroy } from '@angular/core';
+import { ACCOUNT_REGISTER } from './../../../api-urls-namespace';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   FormGroup,
@@ -7,13 +8,33 @@ import {
   FormControl,
 } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd';
+import { _HttpClient } from '@delon/theme';
 
 @Component({
   selector: 'passport-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.less'],
 })
-export class UserRegisterComponent implements OnDestroy {
+export class UserRegisterComponent implements OnDestroy, OnInit {
+
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    public msg: NzMessageService,
+    private httpClient: _HttpClient
+  ) { }
+
+
+  // region: fields
+  get mail() {
+    return this.form.controls.mail;
+  }
+  get password() {
+    return this.form.controls.password;
+  }
+  get confirm() {
+    return this.form.controls.confirm;
+  }
   form: FormGroup;
   error = '';
   type = 0;
@@ -27,34 +48,11 @@ export class UserRegisterComponent implements OnDestroy {
     pool: 'exception',
   };
 
-  constructor(
-    fb: FormBuilder,
-    private router: Router,
-    public msg: NzMessageService,
-  ) {
-    this.form = fb.group({
-      mail: [null, [Validators.email]],
-      password: [
-        null,
-        [
-          Validators.required,
-          Validators.minLength(6),
-          UserRegisterComponent.checkPassword.bind(this),
-        ],
-      ],
-      confirm: [
-        null,
-        [
-          Validators.required,
-          Validators.minLength(6),
-          UserRegisterComponent.passwordEquar,
-        ],
-      ],
-      mobilePrefix: ['+86'],
-      mobile: [null, [Validators.required, Validators.pattern(/^1\d{10}$/)]],
-      captcha: [null, [Validators.required]],
-    });
-  }
+  // endregion
+
+  // region: get captcha
+  count = 0;
+  interval$: any;
 
   static checkPassword(control: FormControl) {
     if (!control) return null;
@@ -77,54 +75,51 @@ export class UserRegisterComponent implements OnDestroy {
     return null;
   }
 
-  // region: fields
+  ngOnInit(): void {
 
-  get mail() {
-    return this.form.controls.mail;
+    this.form = this.fb.group({
+      mail: [null, [Validators.email]],
+      password: [
+        null,
+        [
+          Validators.required,
+          Validators.minLength(6),
+          UserRegisterComponent.checkPassword.bind(this),
+        ],
+      ],
+      confirm: [
+        null,
+        [
+          Validators.required,
+          Validators.minLength(6),
+          UserRegisterComponent.passwordEquar,
+        ],
+      ]
+    });
   }
-  get password() {
-    return this.form.controls.password;
-  }
-  get confirm() {
-    return this.form.controls.confirm;
-  }
-  get mobile() {
-    return this.form.controls.mobile;
-  }
-  get captcha() {
-    return this.form.controls.captcha;
-  }
-
   // endregion
-
-  // region: get captcha
-
-  count = 0;
-  interval$: any;
-
-  getCaptcha() {
-    this.count = 59;
-    this.interval$ = setInterval(() => {
-      this.count -= 1;
-      if (this.count <= 0) clearInterval(this.interval$);
-    }, 1000);
-  }
-
-  // endregion
-
   submit() {
     this.error = '';
+    // tslint:disable-next-line:forin
     for (const i in this.form.controls) {
       this.form.controls[i].markAsDirty();
       this.form.controls[i].updateValueAndValidity();
     }
     if (this.form.invalid) return;
-    // mock http
     this.loading = true;
-    setTimeout(() => {
-      this.loading = false;
-      this.router.navigate(['/passport/register-result']);
-    }, 1000);
+
+    // 请求后台创建账号
+    this.httpClient.post(ACCOUNT_REGISTER, { email: this.mail.value, password: this.password.value })
+      .subscribe(
+        (result: any) => {
+          console.log(result);
+          // 成功获取到Token后
+          this.loading = false;
+          this.msg.success(result);
+          this.router.navigate(['passport/login']);
+        },
+        err => this.loading = false
+      );
   }
 
   ngOnDestroy(): void {

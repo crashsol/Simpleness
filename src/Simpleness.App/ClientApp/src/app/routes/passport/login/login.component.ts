@@ -15,6 +15,7 @@ import {
 import { ReuseTabService } from '@delon/abc';
 import { environment } from '@env/environment';
 import { StartupService } from '@core/startup/startup.service';
+import { ACCOUNT_LOGIN } from 'app/api-urls-namespace';
 
 @Component({
   selector: 'passport-login',
@@ -113,7 +114,7 @@ export class UserLoginComponent implements OnDestroy {
 
 
     // 请求后台获取Token
-    this.httpClient.post('Account/login', { 'username': this.userName.value, 'password': this.password.value })
+    this.httpClient.post(ACCOUNT_LOGIN, { 'username': this.userName.value, 'password': this.password.value })
       .subscribe(
         (result: any) => {
 
