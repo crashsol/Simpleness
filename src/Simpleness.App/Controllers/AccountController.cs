@@ -23,6 +23,7 @@ using Simpleness.Infrastructure.AspNetCore.Models;
 using System.Net.Http;
 using System.Web;
 using Simpleness.App.Filters;
+using Simpleness.Infrastructure.AspNetCore.Mvc;
 
 namespace Simpleness.App.Controllers
 {
@@ -62,7 +63,7 @@ namespace Simpleness.App.Controllers
         [DisableAudit]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        [HttpPost("login")]
+        [HttpPost("login")]      
         public async Task<IActionResult> LoginAsync(LoginViewModel model)
         {
 
@@ -70,7 +71,7 @@ namespace Simpleness.App.Controllers
             if (user == null)
             {
                 _logger.LogInformation($"未注册用户： {model.UserName},尝试登录!");
-                return BadRequest("用户不存在");
+                return BadRequest(ApiResponse.Error("用户不存在"));
             }
             var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, lockoutOnFailure: true);
             if (result.Succeeded)
@@ -100,7 +101,7 @@ namespace Simpleness.App.Controllers
                     cred
                     );
                 //返回token
-                return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+                return Ok(ApiResponse.Ok(new{ token = new JwtSecurityTokenHandler().WriteToken(token) }));
 
             }
             if (result.IsNotAllowed)
@@ -110,20 +111,19 @@ namespace Simpleness.App.Controllers
                 var callbackUrl = Url.Action(
                     "ConfirmEmailAsync",
                     "Account",
-                    new { code = HttpUtility.UrlEncode(code), userId = user.Id },
+                    new { code, userId = user.Id },
                     protocol: Request.Scheme);               
                 await _emailService.SendAsync(user.Email, "邮箱验证", $"请点击链接,已验证你的邮箱<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>验证邮箱</a>.", true);
-                return BadRequest("邮箱未验证，请登录邮箱验证！");
+                return BadRequest(ApiResponse.Error("邮箱未验证，请登录邮箱验证！"));
             }
             //账号被锁定
             if (result.IsLockedOut)
             {
                 _logger.LogWarning($"账户被锁定: {model.UserName} ");
-                return BadRequest("账号被锁定,无法登录,请联系管理员!");
+                return BadRequest(ApiResponse.Error("账号被锁定,无法登录,请联系管理员!"));
             }
-            return BadRequest("用户名密码不匹配");
-        }
-
+            return BadRequest(ApiResponse.Error("用户名密码不匹配"));
+        }      
 
         /// <summary>
         /// 新用户注册
@@ -144,12 +144,12 @@ namespace Simpleness.App.Controllers
                 var callbackUrl = Url.Action(
                     "ConfirmEmailAsync",
                     "Account",
-                    new { code = HttpUtility.UrlEncode(code),userId = user.Id },
+                    new { code,userId = user.Id },
                     protocol: Request.Scheme);         
                 await _emailService.SendAsync(user.Email, "新用户注册,邮箱验证", $"请点击链接,已验证你的邮箱<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>验证邮箱</a>.", true);
-                return Ok("注册成功，请登录邮箱验证！");
+                return Ok(ApiResponse.Ok("注册成功，请登录邮箱验证！"));
             }
-            return BadRequest(result.Errors.Select(b => b.Description).Aggregate((i, next) => $"{i},{next}"));
+            return BadRequest(ApiResponse.Error(result.Errors.Select(b => b.Description).Aggregate((i, next) => $"{i},{next}")));
         }
 
 
@@ -167,15 +167,10 @@ namespace Simpleness.App.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return BadRequest($"无法找到ID为 '{userId}'的用户.");
+                return BadRequest(ApiResponse.Error($"无法找到ID为 '{userId}'的用户."));
             }
-            var result = await _userManager.ConfirmEmailAsync(user, code);
-            if (!result.Succeeded)
-            {
-                return Redirect("/login?status=fail");
-                //return BadRequest($" '{userId}' 用户验证邮箱失败:");
-            }
-            return Redirect("/login?status=success");
+            var result = await _userManager.ConfirmEmailAsync(user, code);            
+            return Redirect($"/passport/register-result?status={result.Succeeded}&email={user.Email}");
         }
 
 
@@ -192,7 +187,7 @@ namespace Simpleness.App.Controllers
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
             {
-                return BadRequest("该邮箱未注册!");
+                return BadRequest(ApiResponse.Error("该邮箱未注册!"));
             }
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
 
@@ -202,7 +197,7 @@ namespace Simpleness.App.Controllers
                    new { code = HttpUtility.UrlEncode(code) },
                    protocol: Request.Scheme);     
             await _emailService.SendAsync(user.Email, "邮箱验证", $"请点击链接,重置你的密码<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>重置密码</a>.", true);
-            return Ok("请重置密码邮件已发送至你的邮箱,请查收!");
+            return Ok(ApiResponse.Ok("请重置密码邮件已发送至你的邮箱,请查收!"));
         }
 
         /// <summary>
@@ -220,14 +215,14 @@ namespace Simpleness.App.Controllers
             if (user == null)
             {
                 // Don't reveal that the user does not exist
-                return BadRequest("该邮箱未注册!");
+                return BadRequest(ApiResponse.Error("该邮箱未注册!")); 
             }
             var result = await _userManager.ResetPasswordAsync(user, dto.Code, dto.Password);
             if (result.Succeeded)
             {
-                return Ok("重置密码成功");
+                return Ok(ApiResponse.Ok("重置密码成功"));
             }
-            return BadRequest(result.Errors.Select(b => b.Description).Aggregate((i, next) => $"{i},{next}"));
+            return BadRequest(ApiResponse.Error(result.Errors.Select(b => b.Description).Aggregate((i, next) => $"{i},{next}")));
 
         }
     }

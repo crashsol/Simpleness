@@ -1,3 +1,4 @@
+import { ApiResponse } from './../../../api-response';
 import { ACLService } from '@delon/acl';
 import { HttpClient } from '@angular/common/http';
 import { SettingsService, _HttpClient } from '@delon/theme';
@@ -114,9 +115,9 @@ export class UserLoginComponent implements OnDestroy {
 
 
     // 请求后台获取Token
-    this.httpClient.post(ACCOUNT_LOGIN, { 'username': this.userName.value, 'password': this.password.value })
+    this.httpClient.post<ApiResponse>(ACCOUNT_LOGIN, { 'username': this.userName.value, 'password': this.password.value })
       .subscribe(
-        (result: any) => {
+        (result: ApiResponse) => {
 
           console.log(result);
           // 成功获取到Token后
@@ -124,14 +125,13 @@ export class UserLoginComponent implements OnDestroy {
           // 清空路由复用信息
           this.reuseTabService.clear();
 
-          const token: string = result.token;
+          const token: string = result.result.token;
           // 设置Token信息
           this.tokenService.set({
             token: token
           });
           // 在获取出来解析token，从中获取用户信息及权限信息
           const jwtToken = this.tokenService.get(JWTTokenModel);
-          console.log(jwtToken);
 
           // 用户信息：包括姓名、头像、邮箱地址
           const user = {
@@ -143,7 +143,7 @@ export class UserLoginComponent implements OnDestroy {
 
           this.aclService.setRole(jwtToken.payload.permission);
           // 直接跳转
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/home/dashboard']);
         },
         err => this.loading = false
       );

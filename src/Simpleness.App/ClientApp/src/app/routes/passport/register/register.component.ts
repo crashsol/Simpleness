@@ -1,3 +1,4 @@
+import { ApiResponse } from './../../../api-response';
 import { ACCOUNT_REGISTER } from './../../../api-urls-namespace';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -110,17 +111,16 @@ export class UserRegisterComponent implements OnDestroy, OnInit {
 
     // 请求后台创建账号
     this.httpClient
-      .post(ACCOUNT_REGISTER, { email: this.mail.value, password: this.password.value })
+      .post<ApiResponse>(ACCOUNT_REGISTER, { email: this.mail.value, password: this.password.value })
       .subscribe(
-        (result: string) => {
+        (result: ApiResponse) => {
           // 成功获取到Token后
           this.loading = false;
-          this.msg.success(result);
+          this.msg.success(result.message);
           this.router.navigate(['passport/login']);
         },
         err => {
           this.loading = false;
-          console.log(2);
         }
       );
   }

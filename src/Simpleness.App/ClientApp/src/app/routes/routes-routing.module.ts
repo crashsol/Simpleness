@@ -21,7 +21,7 @@ import { ACLGuard } from '@delon/acl';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'home',
     component: LayoutDefaultComponent,
     canActivate: [ACLGuard],
     data: { guard: 'System_' },

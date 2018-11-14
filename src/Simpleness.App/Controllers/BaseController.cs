@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Simpleness.App.Filters;
 using Simpleness.Infrastructure.AspNetCore.Extensions;
 using Simpleness.Infrastructure.AspNetCore.Models;
+using Simpleness.Infrastructure.AspNetCore.Mvc;
 
 namespace Simpleness.App.Controllers
 {
@@ -20,8 +21,8 @@ namespace Simpleness.App.Controllers
         /// <summary>
         /// 获取当前登录用户信息
         /// </summary>
-        protected UserIdentity UserIdentity => User.UserIdentity();
+        protected UserIdentity UserIdentity => User.UserIdentity();    
+      
 
-     
     }
 }

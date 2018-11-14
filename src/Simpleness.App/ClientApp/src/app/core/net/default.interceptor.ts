@@ -37,7 +37,7 @@ export class DefaultInterceptor implements HttpInterceptor {
   ): Observable<any> {
     // 可能会因为 `throw` 导出无法执行 `_HttpClient` 的 `end()` 操作
     this.injector.get(_HttpClient).end();
-    console.log(event);
+
     // 业务处理：一些通用操作
     switch (event.status) {
       case 200:
@@ -72,8 +72,7 @@ export class DefaultInterceptor implements HttpInterceptor {
       default:
         // 统一抛出异常
         if (event instanceof HttpErrorResponse) {
-          console.warn(event.error);
-          this.msg.error(event.error);
+          this.msg.error(event.error.message);
           return throwError({});
         }
         break;
