@@ -78,7 +78,7 @@ export class UserRegisterComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
 
     this.form = this.fb.group({
-      mail: [null, [Validators.email]],
+      mail: ['242796172@qq.com', [Validators.email]],
       password: [
         null,
         [
@@ -109,16 +109,19 @@ export class UserRegisterComponent implements OnDestroy, OnInit {
     this.loading = true;
 
     // 请求后台创建账号
-    this.httpClient.post(ACCOUNT_REGISTER, { email: this.mail.value, password: this.password.value })
+    this.httpClient
+      .post(ACCOUNT_REGISTER, { email: this.mail.value, password: this.password.value })
       .subscribe(
-        (result: any) => {
-          console.log(result);
+        (result: string) => {
           // 成功获取到Token后
           this.loading = false;
           this.msg.success(result);
           this.router.navigate(['passport/login']);
         },
-        err => this.loading = false
+        err => {
+          this.loading = false;
+          console.log(2);
+        }
       );
   }
 

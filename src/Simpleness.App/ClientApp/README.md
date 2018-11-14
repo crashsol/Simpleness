@@ -32,4 +32,12 @@
   ```
   
 - 修改app/routes/login/loginComponents.ts中的登录逻辑
+- 在进行注册的时候发现，ng-alain默认JwtokenInterceptor会验证Token，如果请求注册地址，需要通过配置文件添加请求白名单
+  ```
+    return Object.assign(new DelonAuthConfig(), <DelonAuthConfig>{
+    login_url: '/passport/login',
+    // 添加过滤，不验证Token的Url白名单
+     ignores: [/account\//, /assets\//, /passport\//]
+  });
+  ```
   

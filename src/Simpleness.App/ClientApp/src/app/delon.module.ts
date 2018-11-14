@@ -61,6 +61,8 @@ import { DelonAuthConfig } from '@delon/auth';
 export function fnDelonAuthConfig(): DelonAuthConfig {
   return Object.assign(new DelonAuthConfig(), <DelonAuthConfig>{
     login_url: '/passport/login',
+    // 添加过滤，不验证Token的Url白名单
+     ignores: [/account\//, /assets\//, /passport\//]
   });
 }
 
