@@ -32,6 +32,9 @@ using NETCore.MailKit.Infrastructure.Internal;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IdentityModel.Tokens.Jwt;
 using AspNetCore.WeixinOAuth;
+using Simpleness.Infrastructure.AspNetCore.Middlewares;
+using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Http;
 
 namespace Simpleness.App
 {
@@ -105,7 +108,7 @@ namespace Simpleness.App
 
             //services.AddAuthentication().AddWeixinOAuth(option =>
             //{
-              
+
             //    option.AppId = Configuration["WeixinAuth:AppId"];
             //    option.AppSecret = Configuration["WeixinAuth:AppSecret"];
             //    option.SaveTokens = true;
@@ -168,6 +171,10 @@ namespace Simpleness.App
                 optionbuilder.UseMailKit(mailOption);
             });
 
+            //添加CSRF配置 
+            services.AddTransient<AntiforgeryMiddlerware>();
+            services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
+
 
             services.AddMvc(option =>
             {
@@ -175,16 +182,20 @@ namespace Simpleness.App
                 option.AllowCombiningAuthorizeFilters = false;
                 //Exception Filter
                 option.Filters.Add(typeof(GlobalExceptionFilter));
+
+                //CSRF Token
+                option.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+
                 //使用ApiController标记了控制器，会默认验证模型，如果验证不通过会BadRequest(ModelState);
                 //option.Filters.Add(typeof(ValidateModelFilter));
 
             }).AddJsonOptions(option =>
-            {
+                {
                 //对数据进行转化出错时，抛出异常
                 option.AllowInputFormatterExceptionMessages = true;
-                option.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
-                option.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-            })
+                    option.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+                    option.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                })
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             //关闭默认的ApiBehavior
@@ -203,7 +214,7 @@ namespace Simpleness.App
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IAntiforgery antiforgery)
         {
             if (env.IsDevelopment())
             {
@@ -224,12 +235,17 @@ namespace Simpleness.App
                 app.UseHsts();
                 app.UseHttpsRedirection();
             }
+
             //认证
             app.UseAuthentication();
+
+            //CSRF添加Anti_token
+            app.UseAntiforgery();
 
             //静态文件
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+
             //mvc管道
             app.UseMvc();
             //单页面

@@ -12,7 +12,7 @@ using Simpleness.Infrastructure.AspNetCore.Mvc;
 
 namespace Simpleness.App.Controllers
 {
-    [Audit]
+    [Audit] 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
