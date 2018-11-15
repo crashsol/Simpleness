@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Simpleness.Infrastructure.AspNetCore.Middlewares
@@ -31,18 +28,6 @@ namespace Simpleness.Infrastructure.AspNetCore.Middlewares
             }
 
             return next(context);
-        }
-    }
-
-    /// <summary>
-    /// 启用CSRF 中间件
-    /// </summary>
-    public static class MiddlewareExtensions
-    {
-
-        public static IApplicationBuilder UseAntiforgery(this IApplicationBuilder builder)
-        {
-            return builder.UseMiddleware<AntiforgeryMiddlerware>();
         }
     }
 }

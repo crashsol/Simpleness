@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
+using Simpleness.Infrastructure.AspNetCore.Mvc;
 using Simpleness.Infrastructure.AspNetCore.UserException;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace Simpleness.Infrastructure.AspNetCore.Filters
         {
             if (context.Exception.GetType() == typeof(UserOperationException))
             {
-                context.Result = new BadRequestObjectResult(context.Exception.Message);
+                context.Result = new BadRequestObjectResult(ApiResponse.Error(context.Exception.Message));
             }
             else
             {
@@ -37,7 +38,7 @@ namespace Simpleness.Infrastructure.AspNetCore.Filters
                     //非生产环境就返回堆栈错误信息
                     Message = context.Exception.StackTrace;
                 }
-                context.Result = new BadRequestObjectResult(Message);
+                context.Result = new BadRequestObjectResult(ApiResponse.Error(Message));
             }
             //记录错误信息
             _logger.LogError(context.Exception, context.Exception.Message);

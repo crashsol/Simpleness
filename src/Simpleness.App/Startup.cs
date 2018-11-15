@@ -232,8 +232,9 @@ namespace Simpleness.App
             }
             else
             {
+                app.UseAppExceptionHandler();
                 app.UseHsts();
-                app.UseHttpsRedirection();
+                app.UseHttpsRedirection();                
             }
 
             //认证

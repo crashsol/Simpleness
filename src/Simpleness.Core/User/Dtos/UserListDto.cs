@@ -18,6 +18,7 @@ namespace Simpleness.Core.User.Dtos
         public string Avatar { get; set; }
 
         public string Email { get; set; }
+      
 
         public string Phone { get; set; }
 

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using Simpleness.Infrastructure.AspNetCore.Extensions;
+using Simpleness.Infrastructure.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace Simpleness.Infrastructure.AspNetCore.Filters
                 {
                     //如果是ajax请求，返回json数据
                     var errors = context.ModelState.Values.SelectMany(v => v.Errors);
-                    context.Result = new JsonResult(errors.Select(a => a.ErrorMessage).Aggregate((i, next) => $"{i},{next}"));
+                    context.Result = new BadRequestObjectResult(ApiResponse.Error(errors.Select(a => a.ErrorMessage).Aggregate((i, next) => $"{i},{next}")));
                 }
             }
 
