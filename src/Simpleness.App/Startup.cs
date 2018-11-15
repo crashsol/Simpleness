@@ -218,7 +218,7 @@ namespace Simpleness.App
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                 app.UseDeveloperExceptionPage();              
                 //swagger
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
@@ -232,17 +232,14 @@ namespace Simpleness.App
             }
             else
             {
-                app.UseAppExceptionHandler();
                 app.UseHsts();
-                app.UseHttpsRedirection();                
-            }
-
+                app.UseHttpsRedirection();
+                app.UseAppExceptionHandler();
+            }           
             //认证
             app.UseAuthentication();
-
             //CSRF添加Anti_token
             app.UseAntiforgery();
-
             //静态文件
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
