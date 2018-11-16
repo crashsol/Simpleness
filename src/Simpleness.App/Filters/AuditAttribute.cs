@@ -76,12 +76,7 @@ namespace Simpleness.App.Filters
                 {
                     var resultObj = (context.Result as ObjectResult);
                     audit.Result = JsonConvert.SerializeObject(resultObj.Value);
-                }
-                else
-                {
-                    var result = JsonConvert.SerializeObject(context.Result);
-                    audit.Result = result;
-                }
+                }            
                 audit.StatusCode = context.HttpContext.Response.StatusCode;
                 if (context.Exception != null)
                 {

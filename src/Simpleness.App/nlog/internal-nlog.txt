@@ -250,3 +250,51 @@
 2018-11-15 20:25:13.9214 Info Adding target File Target[ownFile-web]
 2018-11-15 20:25:13.9284 Info Configured from an XML element in D:\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\nlog.config...
 2018-11-15 20:25:13.9473 Info Found 45 configuration items
+2018-11-16 21:36:42.0747 Info Message Template Auto Format enabled
+2018-11-16 21:36:42.0832 Info Loading assembly: NLog.Web.AspNetCore
+2018-11-16 21:36:42.1849 Info Adding target File Target[allfile]
+2018-11-16 21:36:42.1967 Info Adding target File Target[ownFile-web]
+2018-11-16 21:36:42.1967 Info Configured from an XML element in D:\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\nlog.config...
+2018-11-16 21:36:42.2206 Info Found 45 configuration items
+2018-11-16 21:38:18.6597 Info Message Template Auto Format enabled
+2018-11-16 21:38:18.6673 Info Loading assembly: NLog.Web.AspNetCore
+2018-11-16 21:38:18.7542 Info Adding target File Target[allfile]
+2018-11-16 21:38:18.7680 Info Adding target File Target[ownFile-web]
+2018-11-16 21:38:18.7767 Info Configured from an XML element in D:\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\nlog.config...
+2018-11-16 21:38:18.7929 Info Found 45 configuration items
+2018-11-16 21:41:54.0128 Info Message Template Auto Format enabled
+2018-11-16 21:41:54.0203 Info Loading assembly: NLog.Web.AspNetCore
+2018-11-16 21:41:54.1008 Info Adding target File Target[allfile]
+2018-11-16 21:41:54.1008 Info Adding target File Target[ownFile-web]
+2018-11-16 21:41:54.1172 Info Configured from an XML element in D:\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\nlog.config...
+2018-11-16 21:41:54.1369 Info Found 45 configuration items
+2018-11-16 21:45:51.0945 Info Message Template Auto Format enabled
+2018-11-16 21:45:51.1027 Info Loading assembly: NLog.Web.AspNetCore
+2018-11-16 21:45:51.1962 Info Adding target File Target[allfile]
+2018-11-16 21:45:51.1962 Info Adding target File Target[ownFile-web]
+2018-11-16 21:45:51.2168 Info Configured from an XML element in D:\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\nlog.config...
+2018-11-16 21:45:51.2461 Info Found 45 configuration items
+2018-11-16 21:49:27.0203 Info Message Template Auto Format enabled
+2018-11-16 21:49:27.0203 Info Loading assembly: NLog.Web.AspNetCore
+2018-11-16 21:49:27.1965 Info Adding target File Target[allfile]
+2018-11-16 21:49:27.2101 Info Adding target File Target[ownFile-web]
+2018-11-16 21:49:27.2101 Info Configured from an XML element in D:\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\nlog.config...
+2018-11-16 21:49:27.2332 Info Found 45 configuration items
+2018-11-16 21:53:03.3408 Info Message Template Auto Format enabled
+2018-11-16 21:53:03.3546 Info Loading assembly: NLog.Web.AspNetCore
+2018-11-16 21:53:03.4843 Info Adding target File Target[allfile]
+2018-11-16 21:53:03.4993 Info Adding target File Target[ownFile-web]
+2018-11-16 21:53:03.5093 Info Configured from an XML element in D:\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\nlog.config...
+2018-11-16 21:53:03.5274 Info Found 45 configuration items
+2018-11-16 21:55:53.6318 Info Message Template Auto Format enabled
+2018-11-16 21:55:53.6318 Info Loading assembly: NLog.Web.AspNetCore
+2018-11-16 21:55:53.7442 Info Adding target File Target[allfile]
+2018-11-16 21:55:53.7561 Info Adding target File Target[ownFile-web]
+2018-11-16 21:55:53.7561 Info Configured from an XML element in D:\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\nlog.config...
+2018-11-16 21:55:53.7823 Info Found 45 configuration items
+2018-11-16 21:56:57.0201 Info Message Template Auto Format enabled
+2018-11-16 21:56:57.0300 Info Loading assembly: NLog.Web.AspNetCore
+2018-11-16 21:56:57.1329 Info Adding target File Target[allfile]
+2018-11-16 21:56:57.1473 Info Adding target File Target[ownFile-web]
+2018-11-16 21:56:57.1611 Info Configured from an XML element in D:\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\nlog.config...
+2018-11-16 21:56:57.1909 Info Found 45 configuration items

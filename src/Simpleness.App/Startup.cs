@@ -35,6 +35,7 @@ using AspNetCore.WeixinOAuth;
 using Simpleness.Infrastructure.AspNetCore.Middlewares;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
+using Simpleness.Infrastructure.AspNetCore.Captcha;
 
 namespace Simpleness.App
 {
@@ -103,16 +104,7 @@ namespace Simpleness.App
 
 
 
-            #endregion
-
-
-            //services.AddAuthentication().AddWeixinOAuth(option =>
-            //{
-
-            //    option.AppId = Configuration["WeixinAuth:AppId"];
-            //    option.AppSecret = Configuration["WeixinAuth:AppSecret"];
-            //    option.SaveTokens = true;
-            //});
+            #endregion           
 
             #region Swashbuckle Api文档配置
             services.AddSwaggerGen(option =>
@@ -171,10 +163,23 @@ namespace Simpleness.App
                 optionbuilder.UseMailKit(mailOption);
             });
 
+
+            // 验证码启用Session
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(20);
+                options.Cookie.HttpOnly = true;
+            });
+            services.Configure<CaptchaOption>(option => {
+                option.Height = 38;
+                option.Width = 200;
+                option.WordLenth = 6; 
+                ;
+           });
+
             //添加CSRF配置 
             services.AddTransient<AntiforgeryMiddlerware>();
             services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
-
 
             services.AddMvc(option =>
             {
@@ -238,6 +243,9 @@ namespace Simpleness.App
             }           
             //认证
             app.UseAuthentication();
+            //启用Session
+            app.UseSession();
+
             //CSRF添加Anti_token
             app.UseAntiforgery();
             //静态文件

@@ -21,8 +21,6 @@ namespace Simpleness.App.Controllers
         /// <summary>
         /// 获取当前登录用户信息
         /// </summary>
-        protected UserIdentity UserIdentity => User.UserIdentity();    
-      
-
+        protected UserIdentity UserIdentity => User.UserIdentity();             
     }
 }

@@ -6,21 +6,27 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
+using Microsoft.Extensions.Options;
+using Simpleness.Infrastructure.AspNetCore.Captcha;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Simpleness.App.Controllers
 {
 
+
     /// <summary>
-    /// 文件上传/下载管理
+    /// 网站通用功能
     /// </summary>
-    public class UploadController : BaseController
+    [AllowAnonymous]
+    public class CommonController : BaseController
     {
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly CaptchaOption _captchaOption;
 
-
-        public UploadController(IHostingEnvironment hostingEnvironment)
+        public CommonController(IHostingEnvironment hostingEnvironment,IOptions<CaptchaOption> options)
         {
             _hostingEnvironment = hostingEnvironment;
+            _captchaOption = options.Value;
         }
 
         /// <summary>
@@ -55,5 +61,17 @@ namespace Simpleness.App.Controllers
             }
             return Ok(new { count = files.Count, size });
         }
+       
+        [HttpGet("get-captcha-image")]
+        [ProducesResponseType(200)]
+        public IActionResult GetCaptchaImage()
+        {
+            var captchaCode = Captcha.GenerateCaptchaCode(_captchaOption.WordLenth);
+            var result = Captcha.GenerateCaptchaImage(_captchaOption.Width, _captchaOption.Height, captchaCode);
+            HttpContext.Session.SetString("CaptchaCode", result.CaptchaCode);
+            Stream s = new MemoryStream(result.CaptchaByteData);
+            return  File(s, "image/png");             
+        }
+
     }
 }
