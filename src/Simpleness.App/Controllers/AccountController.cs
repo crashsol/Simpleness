@@ -61,8 +61,8 @@ namespace Simpleness.App.Controllers
         }
 
         [DisableAudit]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(ApiResponse),200)]
+        [ProducesResponseType(typeof(ApiResponse), 400)]
         [HttpPost("login")]      
         public async Task<IActionResult> LoginAsync(LoginViewModel model)
         {
