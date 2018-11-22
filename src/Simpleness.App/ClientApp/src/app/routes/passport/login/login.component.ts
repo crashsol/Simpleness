@@ -17,6 +17,7 @@ import { ReuseTabService } from '@delon/abc';
 import { environment } from '@env/environment';
 import { StartupService } from '@core/startup/startup.service';
 import { ACCOUNT_LOGIN } from 'app/api-urls-namespace';
+import { AccountServiceProxy } from '@shared/service-proxies/service-proxies';
 
 @Component({
   selector: 'passport-login',
@@ -40,7 +41,8 @@ export class UserLoginComponent implements OnDestroy {
     private startupSrv: StartupService,
     private httpClient: _HttpClient,
     private aclService: ACLService,
-    private settingService: SettingsService
+    private settingService: SettingsService,
+    private accountService: AccountServiceProxy
   ) {
     this.form = fb.group({
       userName: ['47147551@qq.com', [Validators.required, Validators.minLength(5)]],
