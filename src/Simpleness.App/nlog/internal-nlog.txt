@@ -336,3 +336,29 @@
 2018-11-22 12:44:40.3984 Info Adding target File Target[ownFile-web]
 2018-11-22 12:44:40.4192 Info Configured from an XML element in D:\Visual Studio 2017\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\nlog.config...
 2018-11-22 12:44:40.4824 Info Found 45 configuration items
+2018-12-22 20:08:02.0645 Info Message Template Auto Format enabled
+2018-12-22 20:08:02.0713 Info Loading assembly: NLog.Web.AspNetCore
+2018-12-22 20:08:02.1104 Info Adding target File Target[allfile]
+2018-12-22 20:08:02.1104 Info Adding target File Target[ownFile-web]
+2018-12-22 20:08:02.1177 Info Configured from an XML element in D:\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\NLog.config...
+2018-12-22 20:08:02.1297 Info Found 45 configuration items
+2018-12-22 20:08:02.1444 Info Configuration initialized.
+2018-12-22 20:08:02.1444 Info NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 4.5.10.8381. Product version: 4.5.10.
+2018-12-22 20:08:18.9078 Info Shutting down logging...
+2018-12-22 20:08:18.9240 Info Logger has been shut down.
+2018-12-22 20:08:31.7942 Info Message Template Auto Format enabled
+2018-12-22 20:08:31.8012 Info Loading assembly: NLog.Web.AspNetCore
+2018-12-22 20:08:31.8416 Info Adding target File Target[allfile]
+2018-12-22 20:08:31.8416 Info Adding target File Target[ownFile-web]
+2018-12-22 20:08:31.8488 Info Configured from an XML element in D:\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\NLog.config...
+2018-12-22 20:08:31.8488 Info Found 45 configuration items
+2018-12-22 20:08:31.8749 Info Configuration initialized.
+2018-12-22 20:08:31.8784 Info NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 4.5.10.8381. Product version: 4.5.10.
+2018-12-22 20:08:43.4035 Info Shutting down logging...
+2018-12-22 20:08:43.4209 Info Logger has been shut down.
+2018-12-22 20:08:49.6829 Info Message Template Auto Format enabled
+2018-12-22 20:08:49.6829 Info Loading assembly: NLog.Web.AspNetCore
+2018-12-22 20:08:49.7662 Info Adding target File Target[allfile]
+2018-12-22 20:08:49.7746 Info Adding target File Target[ownFile-web]
+2018-12-22 20:08:49.7746 Info Configured from an XML element in D:\Projects\Simpleness\src\Simpleness.App\bin\Debug\netcoreapp2.1\nlog.config...
+2018-12-22 20:08:49.7970 Info Found 45 configuration items
